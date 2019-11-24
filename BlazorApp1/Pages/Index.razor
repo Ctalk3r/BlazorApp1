@@ -1,5 +1,50 @@
 ﻿@page "/"
+@using  BlazorApp1.Models;
+@using  BlazorApp1.Data;
+@using Microsoft.AspNetCore.Hosting;
+@inject NavigationManager NavigationManager
 
-<h1>Hello, world!</h1>
+<AuthorizeView Roles="admin, superuser">
+    <NotAuthorized>
+        <button class="btn btn-primary" @onclick="RunOnClick">
+            SimpleButton
+        </button>
+    </NotAuthorized>
+    <Authorized>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Temp. (C)</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var job in Jobs)
+                {
+                    <tr>
+                        <td>@job.Date.ToShortDateString()</td>
+                        <td>@job.TemperatureC</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </Authorized>
+</AuthorizeView>
 
-Welcome to your new app.
+
+
+@code
+{
+    private void RunOnClick()
+    {
+        NavigationManager.NavigateTo("Identity/Account/Register", true);
+    }
+    private List<Job> Jobs;
+
+    ApplicationDbContext db = services.GetRequiredService<ApplicationDbContext>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        Jobs = db.Jobs.ToList();
+    }
+}

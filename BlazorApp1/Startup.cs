@@ -10,7 +10,8 @@ using BlazorApp1.Data;
 using Microsoft.EntityFrameworkCore;
 using BlazorApp1.Models;
 using Microsoft.AspNetCore.Identity.UI.Services;
-using BlazorApp1;
+using MatBlazor;
+using EmbeddedBlazorContent;
 
 namespace BlazorApp1
 {
@@ -73,6 +74,8 @@ namespace BlazorApp1
 
 			app.UseAuthentication();
 			app.UseAuthorization();
+
+			app.UseEmbeddedBlazorContent(typeof(BaseMatComponent).Assembly);
 
 			app.UseEndpoints(endpoints =>
 			{
