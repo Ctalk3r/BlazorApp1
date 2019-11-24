@@ -1,0 +1,28 @@
+﻿@page
+@model BlazorApp1.Areas.Identity.Pages.Account.Manage.Admin.UserIndexModel
+@attribute [Authorize(Roles = "admin")]
+@{
+    ViewBag.Title = "User's list";
+    ViewData["ActivePage"] = ManageNavPages.AdminUsers;
+}
+
+<partial name="_StatusMessage" model="Model.StatusMessage" />
+<h4>User's list</h4>
+<hr />
+<table class="table">
+    @foreach (var user in Model.UsersList)
+    {
+        <tr>
+            <td>@user.Email</td>
+            <td>
+                <form asp-page-handler="Delete" asp-route-id="@user.Id" method="post">
+                    <a class="btn btn-sm btn-primary" asp-page="UserEdit" asp-route-id="@user.Id">Change</a>
+                    <button type="submit" class="btn btn-sm btn-danger">
+                        Delete
+                    </button>
+                </form>
+            </td>
+        </tr>
+    }
+</table>
+<a class="btn btn-primary" asp-page="UserCreate">Add user</a>

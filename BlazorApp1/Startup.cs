@@ -9,6 +9,8 @@ using BlazorApp1.Areas.Identity;
 using BlazorApp1.Data;
 using Microsoft.EntityFrameworkCore;
 using BlazorApp1.Models;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using BlazorApp1;
 
 namespace BlazorApp1
 {
@@ -28,7 +30,7 @@ namespace BlazorApp1
 			services.AddDbContext<ApplicationDbContext>(options =>
 				options.UseSqlServer(
 					Configuration.GetConnectionString("DefaultConnection")));
-			services.AddDefaultIdentity<User>(options =>
+			services.AddIdentity<User, IdentityRole>(options =>
 			{
 				options.Password.RequiredLength = 6;
 				options.Password.RequireNonAlphanumeric = false;
@@ -37,7 +39,10 @@ namespace BlazorApp1
 				options.Password.RequireDigit = false;
 				options.SignIn.RequireConfirmedAccount = true;
 			})
-				.AddEntityFrameworkStores<ApplicationDbContext>();
+				.AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddDefaultTokenProviders();
+			services.Configure<EmailSettings>(Configuration.GetSection("EmailSettings"));
+			services.AddSingleton<IEmailSender, EmailSender>();
 			services.AddRazorPages();
 			services.AddServerSideBlazor();
 			services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<IdentityUser>>();
@@ -58,6 +63,8 @@ namespace BlazorApp1
 				// The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
 				app.UseHsts();
 			}
+
+			app.UseMiddleware<IdentityMiddleware>();
 
 			app.UseHttpsRedirection();
 			app.UseStaticFiles();

@@ -1,0 +1,16 @@
+﻿@page
+@model BlazorApp1.Areas.Identity.Pages.Account.Manage.Admin.CreateModel
+@attribute [Authorize(Roles = "admin")]
+@{
+    ViewData["ActivePage"] = ManageNavPages.AdminRoles;
+}
+
+<div asp-validation-summary="All" class="text-danger"></div>
+
+<form method="post">
+    <div class="form-group">
+        <label for="name">Новая роль</label>
+        <input name="name" class="form-control" />
+    </div>
+    <button type="submit" class="btn btn-primary">Добавить</button>
+</form>

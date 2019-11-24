@@ -18,7 +18,7 @@ namespace BlazorApp1
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var host = CreateHostBuilder(args).Build();
             using (var scope = host.Services.CreateScope())
@@ -27,7 +27,9 @@ namespace BlazorApp1
                 try
                 {
                     var db = services.GetRequiredService<ApplicationDbContext>();
-                    Test.Add(db);
+                    var userManager = services.GetRequiredService<UserManager<User>>();
+                    var rolesManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+                    await RoleInitializer.InitializeAsync(userManager, rolesManager);
                 }
                 catch (Exception ex)
                 {
