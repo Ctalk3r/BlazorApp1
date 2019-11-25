@@ -12,6 +12,9 @@ using BlazorApp1.Models;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using MatBlazor;
 using EmbeddedBlazorContent;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Http;
 
 namespace BlazorApp1
 {
@@ -42,17 +45,40 @@ namespace BlazorApp1
 			})
 				.AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
+
 			services.Configure<EmailSettings>(Configuration.GetSection("EmailSettings"));
 			services.AddSingleton<IEmailSender, EmailSender>();
 			services.AddRazorPages();
 			services.AddServerSideBlazor();
 			services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<IdentityUser>>();
 			services.AddSingleton<WeatherForecastService>();
+
+			services.AddHttpContextAccessor();
+			services.AddScoped<HttpContextAccessor>();
+
+			services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+				.AddCookie();
+			services.AddAuthentication()
+				.AddGoogle(options =>
+				{
+					options.ClientId = Configuration["Google:ClientId"];
+					options.ClientSecret = Configuration["Google:ClientSecret"];
+					options.CallbackPath = "/Index";
+					options.ClaimActions.MapJsonKey("urn:google:profile", "link");
+					options.ClaimActions.MapJsonKey("urn:google:image", "picture");
+				})
+				.AddVkontakte(options =>
+				{
+					options.ClientId = Configuration["Vk:ClientId"];
+					options.ClientSecret = Configuration["Vk:ClientSecret"];
+				});
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
 		public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
 		{
+			// app.UseMiddleware<IdentityMiddleware>();
+
 			if (env.IsDevelopment())
 			{
 				app.UseDeveloperExceptionPage();
@@ -65,9 +91,7 @@ namespace BlazorApp1
 				app.UseHsts();
 			}
 
-			app.UseMiddleware<IdentityMiddleware>();
 
-			app.UseHttpsRedirection();
 			app.UseStaticFiles();
 
 			app.UseRouting();
