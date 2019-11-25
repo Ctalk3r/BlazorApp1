@@ -6187,3 +6187,861 @@ SELECT 1 ELSE SELECT 0"
 2019-11-25 01:35:19.541 +03:00 [Information] The file "/css/open-iconic/font/fonts/open-iconic.woff" was not modified
 2019-11-25 01:35:19.541 +03:00 [Information] Request finished in 0.8554ms 304 application/font-woff
 2019-11-25 01:35:19.560 +03:00 [Information] Authorization failed.
+2019-11-25 11:27:02.914 +03:00 [Information] Entity Framework Core "3.1.0-preview2.19525.5" initialized '"ApplicationDbContext"' using provider '"Microsoft.EntityFrameworkCore.SqlServer"' with options: "None"
+2019-11-25 11:27:05.266 +03:00 [Information] Executed DbCommand ("108"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""
+IF EXISTS
+    (SELECT *
+     FROM [sys].[objects] o
+     WHERE [o].[type] = 'U'
+     AND [o].[is_ms_shipped] = 0
+     AND NOT EXISTS (SELECT *
+         FROM [sys].[extended_properties] AS [ep]
+         WHERE [ep].[major_id] = [o].[object_id]
+             AND [ep].[minor_id] = 0
+             AND [ep].[class] = 1
+             AND [ep].[name] = N'microsoft_database_tools_support'
+    )
+)
+SELECT 1 ELSE SELECT 0"
+2019-11-25 11:27:05.312 +03:00 [Information] User profile is available. Using '"C:\Users\Asus\AppData\Local\ASP.NET\DataProtection-Keys"' as key repository and Windows DPAPI to encrypt keys at rest.
+2019-11-25 11:27:06.003 +03:00 [Information] Executed DbCommand ("142"ms) [Parameters=["@__normalizedName_0='?' (Size = 256)"], CommandType='Text', CommandTimeout='30']"
+""SELECT TOP(1) [a].[Id], [a].[ConcurrencyStamp], [a].[Name], [a].[NormalizedName]
+FROM [AspNetRoles] AS [a]
+WHERE ([a].[NormalizedName] = @__normalizedName_0) AND [a].[NormalizedName] IS NOT NULL"
+2019-11-25 11:27:06.171 +03:00 [Information] Executed DbCommand ("1"ms) [Parameters=["@__normalizedName_0='?' (Size = 256)"], CommandType='Text', CommandTimeout='30']"
+""SELECT TOP(1) [a].[Id], [a].[ConcurrencyStamp], [a].[Name], [a].[NormalizedName]
+FROM [AspNetRoles] AS [a]
+WHERE ([a].[NormalizedName] = @__normalizedName_0) AND [a].[NormalizedName] IS NOT NULL"
+2019-11-25 11:27:06.180 +03:00 [Information] Executed DbCommand ("3"ms) [Parameters=["@__normalizedName_0='?' (Size = 256)"], CommandType='Text', CommandTimeout='30']"
+""SELECT TOP(1) [a].[Id], [a].[ConcurrencyStamp], [a].[Name], [a].[NormalizedName]
+FROM [AspNetRoles] AS [a]
+WHERE ([a].[NormalizedName] = @__normalizedName_0) AND [a].[NormalizedName] IS NOT NULL"
+2019-11-25 11:27:06.247 +03:00 [Information] Executed DbCommand ("52"ms) [Parameters=["@__normalizedUserName_0='?' (Size = 256)"], CommandType='Text', CommandTimeout='30']"
+""SELECT TOP(1) [a].[Id], [a].[AccessFailedCount], [a].[City], [a].[ConcurrencyStamp], [a].[Country], [a].[Email], [a].[EmailConfirmed], [a].[FirstName], [a].[ImageSource], [a].[LockoutEnabled], [a].[LockoutEnd], [a].[NormalizedEmail], [a].[NormalizedUserName], [a].[PasswordHash], [a].[PhoneNumber], [a].[PhoneNumberConfirmed], [a].[RegistrationDate], [a].[SecondName], [a].[SecurityStamp], [a].[TwoFactorEnabled], [a].[UserName]
+FROM [AspNetUsers] AS [a]
+WHERE ([a].[NormalizedUserName] = @__normalizedUserName_0) AND [a].[NormalizedUserName] IS NOT NULL"
+2019-11-25 11:27:06.971 +03:00 [Information] Application started. Press Ctrl+C to shut down.
+2019-11-25 11:27:06.975 +03:00 [Information] Hosting environment: "Development"
+2019-11-25 11:27:06.978 +03:00 [Information] Content root path: "C:\Users\Asus\source\repos\BlazorApp1\BlazorApp1"
+2019-11-25 11:27:07.007 +03:00 [Information] Request starting HTTP/2.0 GET https://localhost:44306/  
+2019-11-25 11:27:07.145 +03:00 [Information] Entity Framework Core "3.1.0-preview2.19525.5" initialized '"ApplicationDbContext"' using provider '"Microsoft.EntityFrameworkCore.SqlServer"' with options: "None"
+2019-11-25 11:27:07.154 +03:00 [Information] Executed DbCommand ("3"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""
+IF EXISTS
+    (SELECT *
+     FROM [sys].[objects] o
+     WHERE [o].[type] = 'U'
+     AND [o].[is_ms_shipped] = 0
+     AND NOT EXISTS (SELECT *
+         FROM [sys].[extended_properties] AS [ep]
+         WHERE [ep].[major_id] = [o].[object_id]
+             AND [ep].[minor_id] = 0
+             AND [ep].[class] = 1
+             AND [ep].[name] = N'microsoft_database_tools_support'
+    )
+)
+SELECT 1 ELSE SELECT 0"
+2019-11-25 11:27:07.201 +03:00 [Information] Executed DbCommand ("2"ms) [Parameters=["@__p_0='?' (Size = 450)"], CommandType='Text', CommandTimeout='30']"
+""SELECT TOP(1) [a].[Id], [a].[AccessFailedCount], [a].[City], [a].[ConcurrencyStamp], [a].[Country], [a].[Email], [a].[EmailConfirmed], [a].[FirstName], [a].[ImageSource], [a].[LockoutEnabled], [a].[LockoutEnd], [a].[NormalizedEmail], [a].[NormalizedUserName], [a].[PasswordHash], [a].[PhoneNumber], [a].[PhoneNumberConfirmed], [a].[RegistrationDate], [a].[SecondName], [a].[SecurityStamp], [a].[TwoFactorEnabled], [a].[UserName]
+FROM [AspNetUsers] AS [a]
+WHERE [a].[Id] = @__p_0"
+2019-11-25 11:27:07.282 +03:00 [Information] Executed DbCommand ("3"ms) [Parameters=["@__user_Id_0='?' (Size = 450)"], CommandType='Text', CommandTimeout='30']"
+""SELECT [a].[Id], [a].[ClaimType], [a].[ClaimValue], [a].[UserId]
+FROM [AspNetUserClaims] AS [a]
+WHERE [a].[UserId] = @__user_Id_0"
+2019-11-25 11:27:07.402 +03:00 [Information] Executed DbCommand ("51"ms) [Parameters=["@__userId_0='?' (Size = 450)"], CommandType='Text', CommandTimeout='30']"
+""SELECT [a0].[Name]
+FROM [AspNetUserRoles] AS [a]
+INNER JOIN [AspNetRoles] AS [a0] ON [a].[RoleId] = [a0].[Id]
+WHERE [a].[UserId] = @__userId_0"
+2019-11-25 11:27:07.410 +03:00 [Information] Executed DbCommand ("1"ms) [Parameters=["@__normalizedName_0='?' (Size = 256)"], CommandType='Text', CommandTimeout='30']"
+""SELECT TOP(1) [a].[Id], [a].[ConcurrencyStamp], [a].[Name], [a].[NormalizedName]
+FROM [AspNetRoles] AS [a]
+WHERE ([a].[NormalizedName] = @__normalizedName_0) AND [a].[NormalizedName] IS NOT NULL"
+2019-11-25 11:27:07.433 +03:00 [Information] Executed DbCommand ("5"ms) [Parameters=["@__role_Id_0='?' (Size = 450)"], CommandType='Text', CommandTimeout='30']"
+""SELECT [a].[ClaimType], [a].[ClaimValue]
+FROM [AspNetRoleClaims] AS [a]
+WHERE [a].[RoleId] = @__role_Id_0"
+2019-11-25 11:27:07.457 +03:00 [Information] Executing endpoint '"/_Host"'
+2019-11-25 11:27:07.548 +03:00 [Information] Route matched with "{page = \"/_Host\", area = \"\"}". Executing page "/_Host"
+2019-11-25 11:27:07.590 +03:00 [Information] Executing an implicit handler method - ModelState is Valid
+2019-11-25 11:27:07.591 +03:00 [Information] Executed an implicit handler method, returned result "Microsoft.AspNetCore.Mvc.RazorPages.PageResult".
+2019-11-25 11:27:07.825 +03:00 [Information] Authorization was successful.
+2019-11-25 11:27:07.893 +03:00 [Information] Executed page "/_Host" in 332.3761ms
+2019-11-25 11:27:07.897 +03:00 [Information] Executed endpoint '"/_Host"'
+2019-11-25 11:27:07.899 +03:00 [Information] Request starting HTTP/2.0 GET https://localhost:44306/css/bootstrap/bootstrap.min.css  
+2019-11-25 11:27:07.899 +03:00 [Information] Request starting HTTP/2.0 GET https://localhost:44306/_framework/blazor.server.js  
+2019-11-25 11:27:07.899 +03:00 [Information] Request starting HTTP/2.0 GET https://localhost:44306/css/site.css  
+2019-11-25 11:27:07.912 +03:00 [Information] The file "/_framework/blazor.server.js" was not modified
+2019-11-25 11:27:07.915 +03:00 [Information] Request finished in 913.3151ms 200 text/html; charset=utf-8
+2019-11-25 11:27:07.927 +03:00 [Information] Request finished in 23.3705ms 304 application/javascript
+2019-11-25 11:27:07.941 +03:00 [Information] Sending file. Request path: '"/css/site.css"'. Physical path: '"C:\Users\Asus\source\repos\BlazorApp1\BlazorApp1\wwwroot\css\site.css"'
+2019-11-25 11:27:07.941 +03:00 [Information] Request finished in 42.616ms 200 text/css
+2019-11-25 11:27:07.953 +03:00 [Information] Request starting HTTP/2.0 GET https://localhost:44306/css/open-iconic/font/css/open-iconic-bootstrap.min.css  
+2019-11-25 11:27:07.959 +03:00 [Information] Sending file. Request path: '"/css/bootstrap/bootstrap.min.css"'. Physical path: '"C:\Users\Asus\source\repos\BlazorApp1\BlazorApp1\wwwroot\css\bootstrap\bootstrap.min.css"'
+2019-11-25 11:27:07.960 +03:00 [Information] Request finished in 61.0547ms 200 text/css
+2019-11-25 11:27:07.966 +03:00 [Information] Sending file. Request path: '"/css/open-iconic/font/css/open-iconic-bootstrap.min.css"'. Physical path: '"C:\Users\Asus\source\repos\BlazorApp1\BlazorApp1\wwwroot\css\open-iconic\font\css\open-iconic-bootstrap.min.css"'
+2019-11-25 11:27:07.966 +03:00 [Information] Request finished in 13.3524ms 200 text/css
+2019-11-25 11:27:08.046 +03:00 [Information] Request starting HTTP/2.0 POST https://localhost:44306/_blazor/negotiate?negotiateVersion=1 text/plain;charset=UTF-8 0
+2019-11-25 11:27:08.132 +03:00 [Information] Entity Framework Core "3.1.0-preview2.19525.5" initialized '"ApplicationDbContext"' using provider '"Microsoft.EntityFrameworkCore.SqlServer"' with options: "None"
+2019-11-25 11:27:08.148 +03:00 [Information] Executed DbCommand ("2"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""
+IF EXISTS
+    (SELECT *
+     FROM [sys].[objects] o
+     WHERE [o].[type] = 'U'
+     AND [o].[is_ms_shipped] = 0
+     AND NOT EXISTS (SELECT *
+         FROM [sys].[extended_properties] AS [ep]
+         WHERE [ep].[major_id] = [o].[object_id]
+             AND [ep].[minor_id] = 0
+             AND [ep].[class] = 1
+             AND [ep].[name] = N'microsoft_database_tools_support'
+    )
+)
+SELECT 1 ELSE SELECT 0"
+2019-11-25 11:27:08.150 +03:00 [Information] Executing endpoint '"/_blazor/negotiate"'
+2019-11-25 11:27:08.165 +03:00 [Information] Executed endpoint '"/_blazor/negotiate"'
+2019-11-25 11:27:08.165 +03:00 [Information] Request finished in 118.6951ms 200 application/json
+2019-11-25 11:27:08.170 +03:00 [Information] Request starting HTTP/1.1 GET https://localhost:44306/_blazor?id=WU9elm2lWiyT-LXW3sVUAQ  
+2019-11-25 11:27:08.182 +03:00 [Information] Entity Framework Core "3.1.0-preview2.19525.5" initialized '"ApplicationDbContext"' using provider '"Microsoft.EntityFrameworkCore.SqlServer"' with options: "None"
+2019-11-25 11:27:08.185 +03:00 [Information] Executed DbCommand ("2"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""
+IF EXISTS
+    (SELECT *
+     FROM [sys].[objects] o
+     WHERE [o].[type] = 'U'
+     AND [o].[is_ms_shipped] = 0
+     AND NOT EXISTS (SELECT *
+         FROM [sys].[extended_properties] AS [ep]
+         WHERE [ep].[major_id] = [o].[object_id]
+             AND [ep].[minor_id] = 0
+             AND [ep].[class] = 1
+             AND [ep].[name] = N'microsoft_database_tools_support'
+    )
+)
+SELECT 1 ELSE SELECT 0"
+2019-11-25 11:27:08.198 +03:00 [Information] Executing endpoint '"/_blazor"'
+2019-11-25 11:27:08.249 +03:00 [Information] Request starting HTTP/2.0 GET https://localhost:44306/css/open-iconic/font/fonts/open-iconic.woff  
+2019-11-25 11:27:08.262 +03:00 [Information] Sending file. Request path: '"/css/open-iconic/font/fonts/open-iconic.woff"'. Physical path: '"C:\Users\Asus\source\repos\BlazorApp1\BlazorApp1\wwwroot\css\open-iconic\font\fonts\open-iconic.woff"'
+2019-11-25 11:27:08.263 +03:00 [Information] Request finished in 13.235ms 200 application/font-woff
+2019-11-25 11:27:08.469 +03:00 [Information] Authorization was successful.
+2019-11-25 11:27:11.672 +03:00 [Information] Request starting HTTP/2.0 POST https://localhost:44306/_blazor/disconnect multipart/form-data; boundary=---------------------------7e3299b3031a 361
+2019-11-25 11:27:11.684 +03:00 [Information] Entity Framework Core "3.1.0-preview2.19525.5" initialized '"ApplicationDbContext"' using provider '"Microsoft.EntityFrameworkCore.SqlServer"' with options: "None"
+2019-11-25 11:27:11.692 +03:00 [Information] Executed DbCommand ("3"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""
+IF EXISTS
+    (SELECT *
+     FROM [sys].[objects] o
+     WHERE [o].[type] = 'U'
+     AND [o].[is_ms_shipped] = 0
+     AND NOT EXISTS (SELECT *
+         FROM [sys].[extended_properties] AS [ep]
+         WHERE [ep].[major_id] = [o].[object_id]
+             AND [ep].[minor_id] = 0
+             AND [ep].[class] = 1
+             AND [ep].[name] = N'microsoft_database_tools_support'
+    )
+)
+SELECT 1 ELSE SELECT 0"
+2019-11-25 11:27:11.695 +03:00 [Information] Executing endpoint '"Blazor disconnect"'
+2019-11-25 11:27:11.750 +03:00 [Information] Executed endpoint '"Blazor disconnect"'
+2019-11-25 11:27:11.751 +03:00 [Information] Request finished in 80.7716ms 0 
+2019-11-25 11:27:11.755 +03:00 [Information] Executed endpoint '"/_blazor"'
+2019-11-25 11:27:11.757 +03:00 [Information] Request finished in 3586.4731ms 101 
+2019-11-25 11:27:49.887 +03:00 [Information] Entity Framework Core "3.1.0-preview2.19525.5" initialized '"ApplicationDbContext"' using provider '"Microsoft.EntityFrameworkCore.SqlServer"' with options: "None"
+2019-11-25 11:27:50.573 +03:00 [Information] Executed DbCommand ("75"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""
+IF EXISTS
+    (SELECT *
+     FROM [sys].[objects] o
+     WHERE [o].[type] = 'U'
+     AND [o].[is_ms_shipped] = 0
+     AND NOT EXISTS (SELECT *
+         FROM [sys].[extended_properties] AS [ep]
+         WHERE [ep].[major_id] = [o].[object_id]
+             AND [ep].[minor_id] = 0
+             AND [ep].[class] = 1
+             AND [ep].[name] = N'microsoft_database_tools_support'
+    )
+)
+SELECT 1 ELSE SELECT 0"
+2019-11-25 11:27:50.610 +03:00 [Information] User profile is available. Using '"C:\Users\Asus\AppData\Local\ASP.NET\DataProtection-Keys"' as key repository and Windows DPAPI to encrypt keys at rest.
+2019-11-25 11:27:51.051 +03:00 [Information] Executed DbCommand ("103"ms) [Parameters=["@__normalizedName_0='?' (Size = 256)"], CommandType='Text', CommandTimeout='30']"
+""SELECT TOP(1) [a].[Id], [a].[ConcurrencyStamp], [a].[Name], [a].[NormalizedName]
+FROM [AspNetRoles] AS [a]
+WHERE ([a].[NormalizedName] = @__normalizedName_0) AND [a].[NormalizedName] IS NOT NULL"
+2019-11-25 11:27:51.152 +03:00 [Information] Executed DbCommand ("1"ms) [Parameters=["@__normalizedName_0='?' (Size = 256)"], CommandType='Text', CommandTimeout='30']"
+""SELECT TOP(1) [a].[Id], [a].[ConcurrencyStamp], [a].[Name], [a].[NormalizedName]
+FROM [AspNetRoles] AS [a]
+WHERE ([a].[NormalizedName] = @__normalizedName_0) AND [a].[NormalizedName] IS NOT NULL"
+2019-11-25 11:27:51.154 +03:00 [Information] Executed DbCommand ("1"ms) [Parameters=["@__normalizedName_0='?' (Size = 256)"], CommandType='Text', CommandTimeout='30']"
+""SELECT TOP(1) [a].[Id], [a].[ConcurrencyStamp], [a].[Name], [a].[NormalizedName]
+FROM [AspNetRoles] AS [a]
+WHERE ([a].[NormalizedName] = @__normalizedName_0) AND [a].[NormalizedName] IS NOT NULL"
+2019-11-25 11:27:51.217 +03:00 [Information] Executed DbCommand ("49"ms) [Parameters=["@__normalizedUserName_0='?' (Size = 256)"], CommandType='Text', CommandTimeout='30']"
+""SELECT TOP(1) [a].[Id], [a].[AccessFailedCount], [a].[City], [a].[ConcurrencyStamp], [a].[Country], [a].[Email], [a].[EmailConfirmed], [a].[FirstName], [a].[ImageSource], [a].[LockoutEnabled], [a].[LockoutEnd], [a].[NormalizedEmail], [a].[NormalizedUserName], [a].[PasswordHash], [a].[PhoneNumber], [a].[PhoneNumberConfirmed], [a].[RegistrationDate], [a].[SecondName], [a].[SecurityStamp], [a].[TwoFactorEnabled], [a].[UserName]
+FROM [AspNetUsers] AS [a]
+WHERE ([a].[NormalizedUserName] = @__normalizedUserName_0) AND [a].[NormalizedUserName] IS NOT NULL"
+2019-11-25 11:27:51.776 +03:00 [Information] Application started. Press Ctrl+C to shut down.
+2019-11-25 11:27:51.780 +03:00 [Information] Hosting environment: "Development"
+2019-11-25 11:27:51.783 +03:00 [Information] Content root path: "C:\Users\Asus\source\repos\BlazorApp1\BlazorApp1"
+2019-11-25 11:27:51.812 +03:00 [Information] Request starting HTTP/2.0 GET https://localhost:44306/  
+2019-11-25 11:27:51.971 +03:00 [Information] Entity Framework Core "3.1.0-preview2.19525.5" initialized '"ApplicationDbContext"' using provider '"Microsoft.EntityFrameworkCore.SqlServer"' with options: "None"
+2019-11-25 11:27:51.993 +03:00 [Information] Executed DbCommand ("3"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""
+IF EXISTS
+    (SELECT *
+     FROM [sys].[objects] o
+     WHERE [o].[type] = 'U'
+     AND [o].[is_ms_shipped] = 0
+     AND NOT EXISTS (SELECT *
+         FROM [sys].[extended_properties] AS [ep]
+         WHERE [ep].[major_id] = [o].[object_id]
+             AND [ep].[minor_id] = 0
+             AND [ep].[class] = 1
+             AND [ep].[name] = N'microsoft_database_tools_support'
+    )
+)
+SELECT 1 ELSE SELECT 0"
+2019-11-25 11:27:52.002 +03:00 [Information] Executing endpoint '"/_Host"'
+2019-11-25 11:27:52.052 +03:00 [Information] Route matched with "{page = \"/_Host\", area = \"\"}". Executing page "/_Host"
+2019-11-25 11:27:52.079 +03:00 [Information] Executing an implicit handler method - ModelState is Valid
+2019-11-25 11:27:52.079 +03:00 [Information] Executed an implicit handler method, returned result "Microsoft.AspNetCore.Mvc.RazorPages.PageResult".
+2019-11-25 11:27:52.274 +03:00 [Information] Executed DbCommand ("4"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT [j].[JobId], [j].[ClientId], [j].[Description], [j].[FreelancerId], [j].[IsCompleted]
+FROM [Jobs] AS [j]"
+2019-11-25 11:27:52.337 +03:00 [Information] Authorization was successful.
+2019-11-25 11:27:52.340 +03:00 [Information] Authorization was successful.
+2019-11-25 11:27:52.398 +03:00 [Information] Executed page "/_Host" in 335.227ms
+2019-11-25 11:27:52.401 +03:00 [Information] Executed endpoint '"/_Host"'
+2019-11-25 11:27:52.401 +03:00 [Information] Request starting HTTP/2.0 GET https://localhost:44306/css/bootstrap/bootstrap.min.css  
+2019-11-25 11:27:52.402 +03:00 [Information] Request starting HTTP/2.0 GET https://localhost:44306/_framework/blazor.server.js  
+2019-11-25 11:27:52.402 +03:00 [Information] Request starting HTTP/2.0 GET https://localhost:44306/css/site.css  
+2019-11-25 11:27:52.410 +03:00 [Information] Request finished in 603.0045ms 200 text/html; charset=utf-8
+2019-11-25 11:27:52.412 +03:00 [Information] The file "/_framework/blazor.server.js" was not modified
+2019-11-25 11:27:52.413 +03:00 [Information] The file "/css/site.css" was not modified
+2019-11-25 11:27:52.413 +03:00 [Information] The file "/css/bootstrap/bootstrap.min.css" was not modified
+2019-11-25 11:27:52.423 +03:00 [Information] Request finished in 21.6028ms 304 application/javascript
+2019-11-25 11:27:52.423 +03:00 [Information] Request finished in 21.6005ms 304 text/css
+2019-11-25 11:27:52.423 +03:00 [Information] Request finished in 21.5812ms 304 text/css
+2019-11-25 11:27:52.448 +03:00 [Information] Request starting HTTP/2.0 GET https://localhost:44306/css/open-iconic/font/css/open-iconic-bootstrap.min.css  
+2019-11-25 11:27:52.448 +03:00 [Information] The file "/css/open-iconic/font/css/open-iconic-bootstrap.min.css" was not modified
+2019-11-25 11:27:52.449 +03:00 [Information] Request finished in 0.6909ms 304 text/css
+2019-11-25 11:27:52.489 +03:00 [Information] Request starting HTTP/2.0 POST https://localhost:44306/_blazor/negotiate?negotiateVersion=1 text/plain;charset=UTF-8 0
+2019-11-25 11:27:52.492 +03:00 [Information] Request starting HTTP/2.0 GET https://localhost:44306/css/open-iconic/font/fonts/open-iconic.woff  
+2019-11-25 11:27:52.493 +03:00 [Information] The file "/css/open-iconic/font/fonts/open-iconic.woff" was not modified
+2019-11-25 11:27:52.493 +03:00 [Information] Request finished in 0.9198ms 304 application/font-woff
+2019-11-25 11:27:52.540 +03:00 [Information] Entity Framework Core "3.1.0-preview2.19525.5" initialized '"ApplicationDbContext"' using provider '"Microsoft.EntityFrameworkCore.SqlServer"' with options: "None"
+2019-11-25 11:27:52.549 +03:00 [Information] Executed DbCommand ("2"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""
+IF EXISTS
+    (SELECT *
+     FROM [sys].[objects] o
+     WHERE [o].[type] = 'U'
+     AND [o].[is_ms_shipped] = 0
+     AND NOT EXISTS (SELECT *
+         FROM [sys].[extended_properties] AS [ep]
+         WHERE [ep].[major_id] = [o].[object_id]
+             AND [ep].[minor_id] = 0
+             AND [ep].[class] = 1
+             AND [ep].[name] = N'microsoft_database_tools_support'
+    )
+)
+SELECT 1 ELSE SELECT 0"
+2019-11-25 11:27:52.551 +03:00 [Information] Executing endpoint '"/_blazor/negotiate"'
+2019-11-25 11:27:52.561 +03:00 [Information] Executed endpoint '"/_blazor/negotiate"'
+2019-11-25 11:27:52.562 +03:00 [Information] Request finished in 72.614ms 200 application/json
+2019-11-25 11:27:52.565 +03:00 [Information] Request starting HTTP/1.1 GET https://localhost:44306/_blazor?id=-YfsnCB5U9tBEWBayQTUjQ  
+2019-11-25 11:27:52.576 +03:00 [Information] Entity Framework Core "3.1.0-preview2.19525.5" initialized '"ApplicationDbContext"' using provider '"Microsoft.EntityFrameworkCore.SqlServer"' with options: "None"
+2019-11-25 11:27:52.578 +03:00 [Information] Executed DbCommand ("2"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""
+IF EXISTS
+    (SELECT *
+     FROM [sys].[objects] o
+     WHERE [o].[type] = 'U'
+     AND [o].[is_ms_shipped] = 0
+     AND NOT EXISTS (SELECT *
+         FROM [sys].[extended_properties] AS [ep]
+         WHERE [ep].[major_id] = [o].[object_id]
+             AND [ep].[minor_id] = 0
+             AND [ep].[class] = 1
+             AND [ep].[name] = N'microsoft_database_tools_support'
+    )
+)
+SELECT 1 ELSE SELECT 0"
+2019-11-25 11:27:52.588 +03:00 [Information] Executing endpoint '"/_blazor"'
+2019-11-25 11:27:52.746 +03:00 [Information] Entity Framework Core "3.1.0-preview2.19525.5" initialized '"ApplicationDbContext"' using provider '"Microsoft.EntityFrameworkCore.SqlServer"' with options: "None"
+2019-11-25 11:27:52.749 +03:00 [Information] Executed DbCommand ("2"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""
+IF EXISTS
+    (SELECT *
+     FROM [sys].[objects] o
+     WHERE [o].[type] = 'U'
+     AND [o].[is_ms_shipped] = 0
+     AND NOT EXISTS (SELECT *
+         FROM [sys].[extended_properties] AS [ep]
+         WHERE [ep].[major_id] = [o].[object_id]
+             AND [ep].[minor_id] = 0
+             AND [ep].[class] = 1
+             AND [ep].[name] = N'microsoft_database_tools_support'
+    )
+)
+SELECT 1 ELSE SELECT 0"
+2019-11-25 11:27:52.752 +03:00 [Information] Executed DbCommand ("0"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT [j].[JobId], [j].[ClientId], [j].[Description], [j].[FreelancerId], [j].[IsCompleted]
+FROM [Jobs] AS [j]"
+2019-11-25 11:27:52.752 +03:00 [Information] Authorization was successful.
+2019-11-25 11:27:52.753 +03:00 [Information] Authorization was successful.
+2019-11-25 11:29:50.307 +03:00 [Information] Entity Framework Core "3.1.0-preview2.19525.5" initialized '"ApplicationDbContext"' using provider '"Microsoft.EntityFrameworkCore.SqlServer"' with options: "None"
+2019-11-25 11:29:50.947 +03:00 [Information] Executed DbCommand ("50"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""
+IF EXISTS
+    (SELECT *
+     FROM [sys].[objects] o
+     WHERE [o].[type] = 'U'
+     AND [o].[is_ms_shipped] = 0
+     AND NOT EXISTS (SELECT *
+         FROM [sys].[extended_properties] AS [ep]
+         WHERE [ep].[major_id] = [o].[object_id]
+             AND [ep].[minor_id] = 0
+             AND [ep].[class] = 1
+             AND [ep].[name] = N'microsoft_database_tools_support'
+    )
+)
+SELECT 1 ELSE SELECT 0"
+2019-11-25 11:29:50.981 +03:00 [Information] User profile is available. Using '"C:\Users\Asus\AppData\Local\ASP.NET\DataProtection-Keys"' as key repository and Windows DPAPI to encrypt keys at rest.
+2019-11-25 11:29:51.427 +03:00 [Information] Executed DbCommand ("51"ms) [Parameters=["@__normalizedName_0='?' (Size = 256)"], CommandType='Text', CommandTimeout='30']"
+""SELECT TOP(1) [a].[Id], [a].[ConcurrencyStamp], [a].[Name], [a].[NormalizedName]
+FROM [AspNetRoles] AS [a]
+WHERE ([a].[NormalizedName] = @__normalizedName_0) AND [a].[NormalizedName] IS NOT NULL"
+2019-11-25 11:29:51.494 +03:00 [Information] Executed DbCommand ("2"ms) [Parameters=["@__normalizedName_0='?' (Size = 256)"], CommandType='Text', CommandTimeout='30']"
+""SELECT TOP(1) [a].[Id], [a].[ConcurrencyStamp], [a].[Name], [a].[NormalizedName]
+FROM [AspNetRoles] AS [a]
+WHERE ([a].[NormalizedName] = @__normalizedName_0) AND [a].[NormalizedName] IS NOT NULL"
+2019-11-25 11:29:51.495 +03:00 [Information] Executed DbCommand ("0"ms) [Parameters=["@__normalizedName_0='?' (Size = 256)"], CommandType='Text', CommandTimeout='30']"
+""SELECT TOP(1) [a].[Id], [a].[ConcurrencyStamp], [a].[Name], [a].[NormalizedName]
+FROM [AspNetRoles] AS [a]
+WHERE ([a].[NormalizedName] = @__normalizedName_0) AND [a].[NormalizedName] IS NOT NULL"
+2019-11-25 11:29:51.518 +03:00 [Information] Executed DbCommand ("10"ms) [Parameters=["@__normalizedUserName_0='?' (Size = 256)"], CommandType='Text', CommandTimeout='30']"
+""SELECT TOP(1) [a].[Id], [a].[AccessFailedCount], [a].[City], [a].[ConcurrencyStamp], [a].[Country], [a].[Email], [a].[EmailConfirmed], [a].[FirstName], [a].[ImageSource], [a].[LockoutEnabled], [a].[LockoutEnd], [a].[NormalizedEmail], [a].[NormalizedUserName], [a].[PasswordHash], [a].[PhoneNumber], [a].[PhoneNumberConfirmed], [a].[RegistrationDate], [a].[SecondName], [a].[SecurityStamp], [a].[TwoFactorEnabled], [a].[UserName]
+FROM [AspNetUsers] AS [a]
+WHERE ([a].[NormalizedUserName] = @__normalizedUserName_0) AND [a].[NormalizedUserName] IS NOT NULL"
+2019-11-25 11:29:52.064 +03:00 [Information] Application started. Press Ctrl+C to shut down.
+2019-11-25 11:29:52.068 +03:00 [Information] Hosting environment: "Development"
+2019-11-25 11:29:52.072 +03:00 [Information] Content root path: "C:\Users\Asus\source\repos\BlazorApp1\BlazorApp1"
+2019-11-25 11:29:52.101 +03:00 [Information] Request starting HTTP/2.0 GET https://localhost:44306/  
+2019-11-25 11:29:52.101 +03:00 [Information] Request starting HTTP/2.0 POST https://localhost:44306/_blazor/disconnect multipart/form-data; boundary=---------------------------7e32f7313031a 363
+2019-11-25 11:29:52.101 +03:00 [Information] Request starting HTTP/2.0 POST https://localhost:44306/_blazor/negotiate?negotiateVersion=1 text/plain;charset=UTF-8 0
+2019-11-25 11:29:52.252 +03:00 [Information] Entity Framework Core "3.1.0-preview2.19525.5" initialized '"ApplicationDbContext"' using provider '"Microsoft.EntityFrameworkCore.SqlServer"' with options: "None"
+2019-11-25 11:29:52.256 +03:00 [Information] Entity Framework Core "3.1.0-preview2.19525.5" initialized '"ApplicationDbContext"' using provider '"Microsoft.EntityFrameworkCore.SqlServer"' with options: "None"
+2019-11-25 11:29:52.256 +03:00 [Information] Entity Framework Core "3.1.0-preview2.19525.5" initialized '"ApplicationDbContext"' using provider '"Microsoft.EntityFrameworkCore.SqlServer"' with options: "None"
+2019-11-25 11:29:52.264 +03:00 [Information] Executed DbCommand ("2"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""
+IF EXISTS
+    (SELECT *
+     FROM [sys].[objects] o
+     WHERE [o].[type] = 'U'
+     AND [o].[is_ms_shipped] = 0
+     AND NOT EXISTS (SELECT *
+         FROM [sys].[extended_properties] AS [ep]
+         WHERE [ep].[major_id] = [o].[object_id]
+             AND [ep].[minor_id] = 0
+             AND [ep].[class] = 1
+             AND [ep].[name] = N'microsoft_database_tools_support'
+    )
+)
+SELECT 1 ELSE SELECT 0"
+2019-11-25 11:29:52.268 +03:00 [Information] Executed DbCommand ("2"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""
+IF EXISTS
+    (SELECT *
+     FROM [sys].[objects] o
+     WHERE [o].[type] = 'U'
+     AND [o].[is_ms_shipped] = 0
+     AND NOT EXISTS (SELECT *
+         FROM [sys].[extended_properties] AS [ep]
+         WHERE [ep].[major_id] = [o].[object_id]
+             AND [ep].[minor_id] = 0
+             AND [ep].[class] = 1
+             AND [ep].[name] = N'microsoft_database_tools_support'
+    )
+)
+SELECT 1 ELSE SELECT 0"
+2019-11-25 11:29:52.268 +03:00 [Information] Executed DbCommand ("3"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""
+IF EXISTS
+    (SELECT *
+     FROM [sys].[objects] o
+     WHERE [o].[type] = 'U'
+     AND [o].[is_ms_shipped] = 0
+     AND NOT EXISTS (SELECT *
+         FROM [sys].[extended_properties] AS [ep]
+         WHERE [ep].[major_id] = [o].[object_id]
+             AND [ep].[minor_id] = 0
+             AND [ep].[class] = 1
+             AND [ep].[name] = N'microsoft_database_tools_support'
+    )
+)
+SELECT 1 ELSE SELECT 0"
+2019-11-25 11:29:52.275 +03:00 [Information] Executing endpoint '"Blazor disconnect"'
+2019-11-25 11:29:52.275 +03:00 [Information] Executing endpoint '"/_Host"'
+2019-11-25 11:29:52.275 +03:00 [Information] Executing endpoint '"/_blazor/negotiate"'
+2019-11-25 11:29:52.322 +03:00 [Information] Executed endpoint '"/_blazor/negotiate"'
+2019-11-25 11:29:52.327 +03:00 [Information] Request finished in 231.7017ms 200 application/json
+2019-11-25 11:29:52.345 +03:00 [Information] Route matched with "{page = \"/_Host\", area = \"\"}". Executing page "/_Host"
+2019-11-25 11:29:52.356 +03:00 [Information] Executed endpoint '"Blazor disconnect"'
+2019-11-25 11:29:52.360 +03:00 [Information] Request finished in 265.7812ms 0 
+2019-11-25 11:29:52.374 +03:00 [Information] Executing an implicit handler method - ModelState is Valid
+2019-11-25 11:29:52.374 +03:00 [Information] Executed an implicit handler method, returned result "Microsoft.AspNetCore.Mvc.RazorPages.PageResult".
+2019-11-25 11:29:52.580 +03:00 [Information] Executed DbCommand ("2"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT [j].[JobId], [j].[ClientId], [j].[Description], [j].[FreelancerId], [j].[IsCompleted]
+FROM [Jobs] AS [j]"
+2019-11-25 11:29:52.647 +03:00 [Information] Authorization was successful.
+2019-11-25 11:29:52.650 +03:00 [Information] Authorization was successful.
+2019-11-25 11:29:52.703 +03:00 [Information] Executed page "/_Host" in 345.8103ms
+2019-11-25 11:29:52.703 +03:00 [Information] Executed endpoint '"/_Host"'
+2019-11-25 11:29:52.704 +03:00 [Information] Request starting HTTP/2.0 GET https://localhost:44306/css/bootstrap/bootstrap.min.css  
+2019-11-25 11:29:52.704 +03:00 [Information] Request starting HTTP/2.0 GET https://localhost:44306/css/site.css  
+2019-11-25 11:29:52.704 +03:00 [Information] Request starting HTTP/2.0 GET https://localhost:44306/_framework/blazor.server.js  
+2019-11-25 11:29:52.708 +03:00 [Information] Request finished in 613.5444ms 200 text/html; charset=utf-8
+2019-11-25 11:29:52.713 +03:00 [Information] The file "/_framework/blazor.server.js" was not modified
+2019-11-25 11:29:52.713 +03:00 [Information] The file "/css/site.css" was not modified
+2019-11-25 11:29:52.713 +03:00 [Information] The file "/css/bootstrap/bootstrap.min.css" was not modified
+2019-11-25 11:29:52.716 +03:00 [Information] Request finished in 12.3921ms 304 text/css
+2019-11-25 11:29:52.717 +03:00 [Information] Request finished in 12.3921ms 304 text/css
+2019-11-25 11:29:52.716 +03:00 [Information] Request finished in 12.3596ms 304 application/javascript
+2019-11-25 11:29:52.746 +03:00 [Information] Request starting HTTP/2.0 GET https://localhost:44306/css/open-iconic/font/css/open-iconic-bootstrap.min.css  
+2019-11-25 11:29:52.746 +03:00 [Information] The file "/css/open-iconic/font/css/open-iconic-bootstrap.min.css" was not modified
+2019-11-25 11:29:52.747 +03:00 [Information] Request finished in 0.7027ms 304 text/css
+2019-11-25 11:29:52.797 +03:00 [Information] Request starting HTTP/2.0 POST https://localhost:44306/_blazor/negotiate?negotiateVersion=1 text/plain;charset=UTF-8 0
+2019-11-25 11:29:52.801 +03:00 [Information] Request starting HTTP/2.0 GET https://localhost:44306/css/open-iconic/font/fonts/open-iconic.woff  
+2019-11-25 11:29:52.802 +03:00 [Information] The file "/css/open-iconic/font/fonts/open-iconic.woff" was not modified
+2019-11-25 11:29:52.802 +03:00 [Information] Request finished in 1.1356ms 304 application/font-woff
+2019-11-25 11:29:52.864 +03:00 [Information] Entity Framework Core "3.1.0-preview2.19525.5" initialized '"ApplicationDbContext"' using provider '"Microsoft.EntityFrameworkCore.SqlServer"' with options: "None"
+2019-11-25 11:29:52.875 +03:00 [Information] Executed DbCommand ("2"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""
+IF EXISTS
+    (SELECT *
+     FROM [sys].[objects] o
+     WHERE [o].[type] = 'U'
+     AND [o].[is_ms_shipped] = 0
+     AND NOT EXISTS (SELECT *
+         FROM [sys].[extended_properties] AS [ep]
+         WHERE [ep].[major_id] = [o].[object_id]
+             AND [ep].[minor_id] = 0
+             AND [ep].[class] = 1
+             AND [ep].[name] = N'microsoft_database_tools_support'
+    )
+)
+SELECT 1 ELSE SELECT 0"
+2019-11-25 11:29:52.884 +03:00 [Information] Executing endpoint '"/_blazor/negotiate"'
+2019-11-25 11:29:52.885 +03:00 [Information] Executed endpoint '"/_blazor/negotiate"'
+2019-11-25 11:29:52.885 +03:00 [Information] Request finished in 88.7069ms 200 application/json
+2019-11-25 11:29:52.890 +03:00 [Information] Request starting HTTP/1.1 GET https://localhost:44306/_blazor?id=YJ3tiec9PLA8nvSQrdObeA  
+2019-11-25 11:29:52.891 +03:00 [Information] Entity Framework Core "3.1.0-preview2.19525.5" initialized '"ApplicationDbContext"' using provider '"Microsoft.EntityFrameworkCore.SqlServer"' with options: "None"
+2019-11-25 11:29:52.892 +03:00 [Information] Executed DbCommand ("2"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""
+IF EXISTS
+    (SELECT *
+     FROM [sys].[objects] o
+     WHERE [o].[type] = 'U'
+     AND [o].[is_ms_shipped] = 0
+     AND NOT EXISTS (SELECT *
+         FROM [sys].[extended_properties] AS [ep]
+         WHERE [ep].[major_id] = [o].[object_id]
+             AND [ep].[minor_id] = 0
+             AND [ep].[class] = 1
+             AND [ep].[name] = N'microsoft_database_tools_support'
+    )
+)
+SELECT 1 ELSE SELECT 0"
+2019-11-25 11:29:52.893 +03:00 [Information] Executing endpoint '"/_blazor"'
+2019-11-25 11:29:53.054 +03:00 [Information] Entity Framework Core "3.1.0-preview2.19525.5" initialized '"ApplicationDbContext"' using provider '"Microsoft.EntityFrameworkCore.SqlServer"' with options: "None"
+2019-11-25 11:29:53.057 +03:00 [Information] Executed DbCommand ("2"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""
+IF EXISTS
+    (SELECT *
+     FROM [sys].[objects] o
+     WHERE [o].[type] = 'U'
+     AND [o].[is_ms_shipped] = 0
+     AND NOT EXISTS (SELECT *
+         FROM [sys].[extended_properties] AS [ep]
+         WHERE [ep].[major_id] = [o].[object_id]
+             AND [ep].[minor_id] = 0
+             AND [ep].[class] = 1
+             AND [ep].[name] = N'microsoft_database_tools_support'
+    )
+)
+SELECT 1 ELSE SELECT 0"
+2019-11-25 11:29:53.059 +03:00 [Information] Executed DbCommand ("0"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT [j].[JobId], [j].[ClientId], [j].[Description], [j].[FreelancerId], [j].[IsCompleted]
+FROM [Jobs] AS [j]"
+2019-11-25 11:29:53.060 +03:00 [Information] Authorization was successful.
+2019-11-25 11:29:53.060 +03:00 [Information] Authorization was successful.
+2019-11-25 11:29:55.845 +03:00 [Information] Request starting HTTP/2.0 GET https://localhost:44306/Identity/Account/LogOut  
+2019-11-25 11:29:55.873 +03:00 [Information] Entity Framework Core "3.1.0-preview2.19525.5" initialized '"ApplicationDbContext"' using provider '"Microsoft.EntityFrameworkCore.SqlServer"' with options: "None"
+2019-11-25 11:29:55.882 +03:00 [Information] Executed DbCommand ("7"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""
+IF EXISTS
+    (SELECT *
+     FROM [sys].[objects] o
+     WHERE [o].[type] = 'U'
+     AND [o].[is_ms_shipped] = 0
+     AND NOT EXISTS (SELECT *
+         FROM [sys].[extended_properties] AS [ep]
+         WHERE [ep].[major_id] = [o].[object_id]
+             AND [ep].[minor_id] = 0
+             AND [ep].[class] = 1
+             AND [ep].[name] = N'microsoft_database_tools_support'
+    )
+)
+SELECT 1 ELSE SELECT 0"
+2019-11-25 11:29:55.884 +03:00 [Information] Executing endpoint '"/Account/LogOut"'
+2019-11-25 11:29:55.932 +03:00 [Information] Route matched with "{page = \"/Account/LogOut\", area = \"Identity\"}". Executing page "/Account/LogOut"
+2019-11-25 11:29:55.964 +03:00 [Information] Executing handler method "AspNetCore.Areas_Identity_Pages_Account_LogOut.OnGetAsync" - ModelState is Valid
+2019-11-25 11:29:55.977 +03:00 [Information] AuthenticationScheme: "Identity.Application" signed out.
+2019-11-25 11:29:55.978 +03:00 [Information] AuthenticationScheme: "Identity.External" signed out.
+2019-11-25 11:29:55.978 +03:00 [Information] AuthenticationScheme: "Identity.TwoFactorUserId" signed out.
+2019-11-25 11:29:55.980 +03:00 [Information] Executed handler method "OnGetAsync", returned result "Microsoft.AspNetCore.Mvc.LocalRedirectResult".
+2019-11-25 11:29:55.981 +03:00 [Information] Executing LocalRedirectResult, redirecting to "/".
+2019-11-25 11:29:55.981 +03:00 [Information] Executed page "/Account/LogOut" in 48.1868ms
+2019-11-25 11:29:55.981 +03:00 [Information] Executed endpoint '"/Account/LogOut"'
+2019-11-25 11:29:55.982 +03:00 [Information] Request finished in 137.0205ms 302 
+2019-11-25 11:29:55.988 +03:00 [Information] Request starting HTTP/2.0 GET https://localhost:44306/  
+2019-11-25 11:29:55.989 +03:00 [Information] Executing endpoint '"/_Host"'
+2019-11-25 11:29:55.989 +03:00 [Information] Route matched with "{page = \"/_Host\", area = \"\"}". Executing page "/_Host"
+2019-11-25 11:29:55.991 +03:00 [Information] Executing an implicit handler method - ModelState is Valid
+2019-11-25 11:29:55.992 +03:00 [Information] Executed an implicit handler method, returned result "Microsoft.AspNetCore.Mvc.RazorPages.PageResult".
+2019-11-25 11:29:55.996 +03:00 [Information] Entity Framework Core "3.1.0-preview2.19525.5" initialized '"ApplicationDbContext"' using provider '"Microsoft.EntityFrameworkCore.SqlServer"' with options: "None"
+2019-11-25 11:29:55.998 +03:00 [Information] Executed DbCommand ("2"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""
+IF EXISTS
+    (SELECT *
+     FROM [sys].[objects] o
+     WHERE [o].[type] = 'U'
+     AND [o].[is_ms_shipped] = 0
+     AND NOT EXISTS (SELECT *
+         FROM [sys].[extended_properties] AS [ep]
+         WHERE [ep].[major_id] = [o].[object_id]
+             AND [ep].[minor_id] = 0
+             AND [ep].[class] = 1
+             AND [ep].[name] = N'microsoft_database_tools_support'
+    )
+)
+SELECT 1 ELSE SELECT 0"
+2019-11-25 11:29:55.999 +03:00 [Information] Executed DbCommand ("1"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT [j].[JobId], [j].[ClientId], [j].[Description], [j].[FreelancerId], [j].[IsCompleted]
+FROM [Jobs] AS [j]"
+2019-11-25 11:29:56.000 +03:00 [Information] Authorization failed.
+2019-11-25 11:29:56.001 +03:00 [Information] Authorization failed.
+2019-11-25 11:29:56.004 +03:00 [Information] Executed page "/_Host" in 15.1666ms
+2019-11-25 11:29:56.005 +03:00 [Information] Executed endpoint '"/_Host"'
+2019-11-25 11:29:56.005 +03:00 [Information] Request finished in 16.3031ms 200 text/html; charset=utf-8
+2019-11-25 11:29:56.009 +03:00 [Information] Request starting HTTP/2.0 GET https://localhost:44306/css/bootstrap/bootstrap.min.css  
+2019-11-25 11:29:56.009 +03:00 [Information] Request starting HTTP/2.0 GET https://localhost:44306/_framework/blazor.server.js  
+2019-11-25 11:29:56.009 +03:00 [Information] Request starting HTTP/2.0 GET https://localhost:44306/css/site.css  
+2019-11-25 11:29:56.011 +03:00 [Information] The file "/_framework/blazor.server.js" was not modified
+2019-11-25 11:29:56.011 +03:00 [Information] The file "/css/bootstrap/bootstrap.min.css" was not modified
+2019-11-25 11:29:56.014 +03:00 [Information] The file "/css/site.css" was not modified
+2019-11-25 11:29:56.014 +03:00 [Information] Request finished in 1.9928ms 304 text/css
+2019-11-25 11:29:56.014 +03:00 [Information] Request starting HTTP/2.0 POST https://localhost:44306/_blazor/disconnect multipart/form-data; boundary=---------------------------7e37383031a 359
+2019-11-25 11:29:56.014 +03:00 [Information] Request finished in 5.0027ms 304 application/javascript
+2019-11-25 11:29:56.014 +03:00 [Information] Request finished in 5.0887ms 304 text/css
+2019-11-25 11:29:56.014 +03:00 [Information] Executing endpoint '"Blazor disconnect"'
+2019-11-25 11:29:56.039 +03:00 [Information] Executed endpoint '"Blazor disconnect"'
+2019-11-25 11:29:56.039 +03:00 [Information] Request finished in 25.4412ms 200 
+2019-11-25 11:29:56.043 +03:00 [Information] Executed endpoint '"/_blazor"'
+2019-11-25 11:29:56.045 +03:00 [Information] Request finished in 3154.7829ms 101 
+2019-11-25 11:29:56.087 +03:00 [Information] Request starting HTTP/2.0 POST https://localhost:44306/_blazor/negotiate?negotiateVersion=1 text/plain;charset=UTF-8 0
+2019-11-25 11:29:56.087 +03:00 [Information] Executing endpoint '"/_blazor/negotiate"'
+2019-11-25 11:29:56.089 +03:00 [Information] Executed endpoint '"/_blazor/negotiate"'
+2019-11-25 11:29:56.090 +03:00 [Information] Request finished in 2.549ms 200 application/json
+2019-11-25 11:29:56.094 +03:00 [Information] Request starting HTTP/2.0 GET https://localhost:44306/css/open-iconic/font/fonts/open-iconic.woff  
+2019-11-25 11:29:56.095 +03:00 [Information] The file "/css/open-iconic/font/fonts/open-iconic.woff" was not modified
+2019-11-25 11:29:56.095 +03:00 [Information] Request finished in 0.9513ms 304 application/font-woff
+2019-11-25 11:29:56.105 +03:00 [Information] Request starting HTTP/1.1 GET https://localhost:44306/_blazor?id=Sy_U2yChwtL2CcnNHvwnPw  
+2019-11-25 11:29:56.105 +03:00 [Information] Executing endpoint '"/_blazor"'
+2019-11-25 11:29:56.128 +03:00 [Information] Entity Framework Core "3.1.0-preview2.19525.5" initialized '"ApplicationDbContext"' using provider '"Microsoft.EntityFrameworkCore.SqlServer"' with options: "None"
+2019-11-25 11:29:56.131 +03:00 [Information] Executed DbCommand ("2"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""
+IF EXISTS
+    (SELECT *
+     FROM [sys].[objects] o
+     WHERE [o].[type] = 'U'
+     AND [o].[is_ms_shipped] = 0
+     AND NOT EXISTS (SELECT *
+         FROM [sys].[extended_properties] AS [ep]
+         WHERE [ep].[major_id] = [o].[object_id]
+             AND [ep].[minor_id] = 0
+             AND [ep].[class] = 1
+             AND [ep].[name] = N'microsoft_database_tools_support'
+    )
+)
+SELECT 1 ELSE SELECT 0"
+2019-11-25 11:29:56.132 +03:00 [Information] Executed DbCommand ("0"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT [j].[JobId], [j].[ClientId], [j].[Description], [j].[FreelancerId], [j].[IsCompleted]
+FROM [Jobs] AS [j]"
+2019-11-25 11:29:56.132 +03:00 [Information] Authorization failed.
+2019-11-25 11:29:56.133 +03:00 [Information] Authorization failed.
+2019-11-25 11:29:58.268 +03:00 [Information] Authorization failed.
+2019-11-25 11:29:58.292 +03:00 [Information] Request starting HTTP/2.0 GET https://localhost:44306/Identity/Account/Register  
+2019-11-25 11:29:58.316 +03:00 [Information] Executing endpoint '"/Account/Register"'
+2019-11-25 11:29:58.348 +03:00 [Information] Route matched with "{page = \"/Account/Register\", area = \"Identity\"}". Executing page "/Account/Register"
+2019-11-25 11:29:58.350 +03:00 [Information] Entity Framework Core "3.1.0-preview2.19525.5" initialized '"ApplicationDbContext"' using provider '"Microsoft.EntityFrameworkCore.SqlServer"' with options: "None"
+2019-11-25 11:29:58.354 +03:00 [Information] Executed DbCommand ("3"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""
+IF EXISTS
+    (SELECT *
+     FROM [sys].[objects] o
+     WHERE [o].[type] = 'U'
+     AND [o].[is_ms_shipped] = 0
+     AND NOT EXISTS (SELECT *
+         FROM [sys].[extended_properties] AS [ep]
+         WHERE [ep].[major_id] = [o].[object_id]
+             AND [ep].[minor_id] = 0
+             AND [ep].[class] = 1
+             AND [ep].[name] = N'microsoft_database_tools_support'
+    )
+)
+SELECT 1 ELSE SELECT 0"
+2019-11-25 11:29:58.364 +03:00 [Information] Executing handler method "BlazorApp1.Areas.Identity.Pages.Account.RegisterModel.OnGetAsync" - ModelState is Valid
+2019-11-25 11:29:58.368 +03:00 [Information] Executed handler method "OnGetAsync", returned result "".
+2019-11-25 11:29:58.368 +03:00 [Information] Executing an implicit handler method - ModelState is Valid
+2019-11-25 11:29:58.368 +03:00 [Information] Executed an implicit handler method, returned result "Microsoft.AspNetCore.Mvc.RazorPages.PageResult".
+2019-11-25 11:29:58.552 +03:00 [Information] Executed page "/Account/Register" in 203.3082ms
+2019-11-25 11:29:58.552 +03:00 [Information] Executed endpoint '"/Account/Register"'
+2019-11-25 11:29:58.552 +03:00 [Information] Request finished in 260.9354ms 200 text/html; charset=utf-8
+2019-11-25 11:29:58.567 +03:00 [Information] Request starting HTTP/2.0 GET https://localhost:44306/Identity/lib/bootstrap/dist/js/bootstrap.bundle.js  
+2019-11-25 11:29:58.567 +03:00 [Information] Request starting HTTP/2.0 POST https://localhost:44306/_blazor/disconnect multipart/form-data; boundary=---------------------------7e322d3a3031a 363
+2019-11-25 11:29:58.568 +03:00 [Information] Request starting HTTP/2.0 GET https://localhost:44306/Identity/css/site.css  
+2019-11-25 11:29:58.568 +03:00 [Information] Executing endpoint '"Blazor disconnect"'
+2019-11-25 11:29:58.574 +03:00 [Information] The file "/Identity/lib/bootstrap/dist/js/bootstrap.bundle.js" was not modified
+2019-11-25 11:29:58.574 +03:00 [Information] Executed endpoint '"/_blazor"'
+2019-11-25 11:29:58.574 +03:00 [Information] Request starting HTTP/2.0 GET https://localhost:44306/Identity/lib/jquery-validation/dist/jquery.validate.js  
+2019-11-25 11:29:58.574 +03:00 [Information] Request starting HTTP/2.0 GET https://localhost:44306/Identity/lib/bootstrap/dist/css/bootstrap.css  
+2019-11-25 11:29:58.574 +03:00 [Information] Request finished in 2469.6519ms 101 
+2019-11-25 11:29:58.574 +03:00 [Information] Request starting HTTP/2.0 GET https://localhost:44306/Identity/js/site.js  
+2019-11-25 11:29:58.574 +03:00 [Information] Request finished in 7.2535ms 304 application/javascript
+2019-11-25 11:29:58.575 +03:00 [Information] Request starting HTTP/2.0 GET https://localhost:44306/Identity/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js  
+2019-11-25 11:29:58.575 +03:00 [Information] The file "/Identity/css/site.css" was not modified
+2019-11-25 11:29:58.575 +03:00 [Information] The file "/Identity/js/site.js" was not modified
+2019-11-25 11:29:58.575 +03:00 [Information] The file "/Identity/lib/jquery-validation/dist/jquery.validate.js" was not modified
+2019-11-25 11:29:58.575 +03:00 [Information] Request finished in 7.5883ms 304 text/css
+2019-11-25 11:29:58.575 +03:00 [Information] Request finished in 0.8261ms 304 application/javascript
+2019-11-25 11:29:58.575 +03:00 [Information] Request finished in 1.1591ms 304 application/javascript
+2019-11-25 11:29:58.575 +03:00 [Information] The file "/Identity/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js" was not modified
+2019-11-25 11:29:58.576 +03:00 [Information] Request finished in 0.8842ms 304 application/javascript
+2019-11-25 11:29:58.576 +03:00 [Information] The file "/Identity/lib/bootstrap/dist/css/bootstrap.css" was not modified
+2019-11-25 11:29:58.576 +03:00 [Information] Executed endpoint '"Blazor disconnect"'
+2019-11-25 11:29:58.577 +03:00 [Information] Request finished in 2.1251ms 304 text/css
+2019-11-25 11:29:58.582 +03:00 [Information] Request finished in 14.8232ms 200 
+2019-11-25 11:29:58.582 +03:00 [Information] Request starting HTTP/2.0 GET https://localhost:44306/Identity/lib/jquery/dist/jquery.js  
+2019-11-25 11:29:58.583 +03:00 [Information] The file "/Identity/lib/jquery/dist/jquery.js" was not modified
+2019-11-25 11:29:58.583 +03:00 [Information] Request finished in 1.1703ms 304 application/javascript
+2019-11-25 11:30:04.734 +03:00 [Information] Request starting HTTP/2.0 GET https://localhost:44306/Identity/Account/Login  
+2019-11-25 11:30:04.765 +03:00 [Information] Executing endpoint '"/Account/Login"'
+2019-11-25 11:30:04.790 +03:00 [Information] Route matched with "{page = \"/Account/Login\", area = \"Identity\"}". Executing page "/Account/Login"
+2019-11-25 11:30:04.792 +03:00 [Information] Entity Framework Core "3.1.0-preview2.19525.5" initialized '"ApplicationDbContext"' using provider '"Microsoft.EntityFrameworkCore.SqlServer"' with options: "None"
+2019-11-25 11:30:04.799 +03:00 [Information] Executed DbCommand ("4"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""
+IF EXISTS
+    (SELECT *
+     FROM [sys].[objects] o
+     WHERE [o].[type] = 'U'
+     AND [o].[is_ms_shipped] = 0
+     AND NOT EXISTS (SELECT *
+         FROM [sys].[extended_properties] AS [ep]
+         WHERE [ep].[major_id] = [o].[object_id]
+             AND [ep].[minor_id] = 0
+             AND [ep].[class] = 1
+             AND [ep].[name] = N'microsoft_database_tools_support'
+    )
+)
+SELECT 1 ELSE SELECT 0"
+2019-11-25 11:30:04.807 +03:00 [Information] Executing handler method "BlazorApp1.Areas.Identity.Pages.Account.LoginModel.OnGetAsync" - ModelState is Valid
+2019-11-25 11:30:04.812 +03:00 [Information] AuthenticationScheme: "Identity.External" signed out.
+2019-11-25 11:30:04.813 +03:00 [Information] Executed handler method "OnGetAsync", returned result "".
+2019-11-25 11:30:04.813 +03:00 [Information] Executing an implicit handler method - ModelState is Valid
+2019-11-25 11:30:04.813 +03:00 [Information] Executed an implicit handler method, returned result "Microsoft.AspNetCore.Mvc.RazorPages.PageResult".
+2019-11-25 11:30:04.882 +03:00 [Information] Executed page "/Account/Login" in 92.4909ms
+2019-11-25 11:30:04.883 +03:00 [Information] Executed endpoint '"/Account/Login"'
+2019-11-25 11:30:04.883 +03:00 [Information] Request finished in 150.5325ms 200 text/html; charset=utf-8
+2019-11-25 11:30:04.900 +03:00 [Information] Request starting HTTP/2.0 GET https://localhost:44306/Identity/lib/jquery/dist/jquery.js  
+2019-11-25 11:30:04.900 +03:00 [Information] Request starting HTTP/2.0 GET https://localhost:44306/Identity/lib/bootstrap/dist/css/bootstrap.css  
+2019-11-25 11:30:04.900 +03:00 [Information] Request starting HTTP/2.0 GET https://localhost:44306/Identity/lib/bootstrap/dist/js/bootstrap.bundle.js  
+2019-11-25 11:30:04.900 +03:00 [Information] Request starting HTTP/2.0 GET https://localhost:44306/Identity/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js  
+2019-11-25 11:30:04.902 +03:00 [Information] The file "/Identity/lib/bootstrap/dist/js/bootstrap.bundle.js" was not modified
+2019-11-25 11:30:04.902 +03:00 [Information] The file "/Identity/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js" was not modified
+2019-11-25 11:30:04.902 +03:00 [Information] The file "/Identity/lib/bootstrap/dist/css/bootstrap.css" was not modified
+2019-11-25 11:30:04.902 +03:00 [Information] The file "/Identity/lib/jquery/dist/jquery.js" was not modified
+2019-11-25 11:30:04.902 +03:00 [Information] Request finished in 2.2767ms 304 application/javascript
+2019-11-25 11:30:04.902 +03:00 [Information] Request finished in 2.2413ms 304 application/javascript
+2019-11-25 11:30:04.902 +03:00 [Information] Request finished in 2.0046ms 304 application/javascript
+2019-11-25 11:30:04.902 +03:00 [Information] Request finished in 2.5438ms 304 text/css
+2019-11-25 11:30:04.903 +03:00 [Information] Request starting HTTP/2.0 GET https://localhost:44306/Identity/css/site.css  
+2019-11-25 11:30:04.903 +03:00 [Information] The file "/Identity/css/site.css" was not modified
+2019-11-25 11:30:04.906 +03:00 [Information] Request finished in 2.7713ms 304 text/css
+2019-11-25 11:30:04.904 +03:00 [Information] Request starting HTTP/2.0 GET https://localhost:44306/Identity/js/site.js  
+2019-11-25 11:30:04.903 +03:00 [Information] Request starting HTTP/2.0 GET https://localhost:44306/Identity/lib/jquery-validation/dist/jquery.validate.js  
+2019-11-25 11:30:04.907 +03:00 [Information] The file "/Identity/js/site.js" was not modified
+2019-11-25 11:30:04.907 +03:00 [Information] The file "/Identity/lib/jquery-validation/dist/jquery.validate.js" was not modified
+2019-11-25 11:30:04.908 +03:00 [Information] Request finished in 4.1916ms 304 application/javascript
+2019-11-25 11:30:04.908 +03:00 [Information] Request finished in 3.6497ms 304 application/javascript
+2019-11-25 11:30:18.927 +03:00 [Information] Request starting HTTP/2.0 POST https://localhost:44306/Identity/Account/Login application/x-www-form-urlencoded 263
+2019-11-25 11:30:18.931 +03:00 [Information] Executing endpoint '"/Account/Login"'
+2019-11-25 11:30:18.932 +03:00 [Information] Route matched with "{page = \"/Account/Login\", area = \"Identity\"}". Executing page "/Account/Login"
+2019-11-25 11:30:18.951 +03:00 [Information] Entity Framework Core "3.1.0-preview2.19525.5" initialized '"ApplicationDbContext"' using provider '"Microsoft.EntityFrameworkCore.SqlServer"' with options: "None"
+2019-11-25 11:30:18.956 +03:00 [Information] Executed DbCommand ("4"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""
+IF EXISTS
+    (SELECT *
+     FROM [sys].[objects] o
+     WHERE [o].[type] = 'U'
+     AND [o].[is_ms_shipped] = 0
+     AND NOT EXISTS (SELECT *
+         FROM [sys].[extended_properties] AS [ep]
+         WHERE [ep].[major_id] = [o].[object_id]
+             AND [ep].[minor_id] = 0
+             AND [ep].[class] = 1
+             AND [ep].[name] = N'microsoft_database_tools_support'
+    )
+)
+SELECT 1 ELSE SELECT 0"
+2019-11-25 11:30:19.003 +03:00 [Information] Executing handler method "BlazorApp1.Areas.Identity.Pages.Account.LoginModel.OnPostAsync" - ModelState is Valid
+2019-11-25 11:30:19.013 +03:00 [Information] Executed DbCommand ("2"ms) [Parameters=["@__normalizedUserName_0='?' (Size = 256)"], CommandType='Text', CommandTimeout='30']"
+""SELECT TOP(1) [a].[Id], [a].[AccessFailedCount], [a].[City], [a].[ConcurrencyStamp], [a].[Country], [a].[Email], [a].[EmailConfirmed], [a].[FirstName], [a].[ImageSource], [a].[LockoutEnabled], [a].[LockoutEnd], [a].[NormalizedEmail], [a].[NormalizedUserName], [a].[PasswordHash], [a].[PhoneNumber], [a].[PhoneNumberConfirmed], [a].[RegistrationDate], [a].[SecondName], [a].[SecurityStamp], [a].[TwoFactorEnabled], [a].[UserName]
+FROM [AspNetUsers] AS [a]
+WHERE ([a].[NormalizedUserName] = @__normalizedUserName_0) AND [a].[NormalizedUserName] IS NOT NULL"
+2019-11-25 11:30:19.168 +03:00 [Information] Executed DbCommand ("3"ms) [Parameters=["@__user_Id_0='?' (Size = 450)"], CommandType='Text', CommandTimeout='30']"
+""SELECT [a].[Id], [a].[ClaimType], [a].[ClaimValue], [a].[UserId]
+FROM [AspNetUserClaims] AS [a]
+WHERE [a].[UserId] = @__user_Id_0"
+2019-11-25 11:30:19.294 +03:00 [Information] Executed DbCommand ("50"ms) [Parameters=["@__userId_0='?' (Size = 450)"], CommandType='Text', CommandTimeout='30']"
+""SELECT [a0].[Name]
+FROM [AspNetUserRoles] AS [a]
+INNER JOIN [AspNetRoles] AS [a0] ON [a].[RoleId] = [a0].[Id]
+WHERE [a].[UserId] = @__userId_0"
+2019-11-25 11:30:19.302 +03:00 [Information] Executed DbCommand ("2"ms) [Parameters=["@__normalizedName_0='?' (Size = 256)"], CommandType='Text', CommandTimeout='30']"
+""SELECT TOP(1) [a].[Id], [a].[ConcurrencyStamp], [a].[Name], [a].[NormalizedName]
+FROM [AspNetRoles] AS [a]
+WHERE ([a].[NormalizedName] = @__normalizedName_0) AND [a].[NormalizedName] IS NOT NULL"
+2019-11-25 11:30:19.325 +03:00 [Information] Executed DbCommand ("4"ms) [Parameters=["@__role_Id_0='?' (Size = 450)"], CommandType='Text', CommandTimeout='30']"
+""SELECT [a].[ClaimType], [a].[ClaimValue]
+FROM [AspNetRoleClaims] AS [a]
+WHERE [a].[RoleId] = @__role_Id_0"
+2019-11-25 11:30:19.342 +03:00 [Information] AuthenticationScheme: "Identity.Application" signed in.
+2019-11-25 11:30:19.353 +03:00 [Information] User logged in.
+2019-11-25 11:30:19.359 +03:00 [Information] Executed handler method "OnPostAsync", returned result "Microsoft.AspNetCore.Mvc.LocalRedirectResult".
+2019-11-25 11:30:19.368 +03:00 [Information] Executing LocalRedirectResult, redirecting to "/".
+2019-11-25 11:30:19.371 +03:00 [Information] Executed page "/Account/Login" in 438.125ms
+2019-11-25 11:30:19.371 +03:00 [Information] Executed endpoint '"/Account/Login"'
+2019-11-25 11:30:19.373 +03:00 [Information] Request finished in 446.5242ms 302 
+2019-11-25 11:30:19.384 +03:00 [Information] Request starting HTTP/2.0 GET https://localhost:44306/  
+2019-11-25 11:30:19.386 +03:00 [Information] Entity Framework Core "3.1.0-preview2.19525.5" initialized '"ApplicationDbContext"' using provider '"Microsoft.EntityFrameworkCore.SqlServer"' with options: "None"
+2019-11-25 11:30:19.389 +03:00 [Information] Executed DbCommand ("3"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""
+IF EXISTS
+    (SELECT *
+     FROM [sys].[objects] o
+     WHERE [o].[type] = 'U'
+     AND [o].[is_ms_shipped] = 0
+     AND NOT EXISTS (SELECT *
+         FROM [sys].[extended_properties] AS [ep]
+         WHERE [ep].[major_id] = [o].[object_id]
+             AND [ep].[minor_id] = 0
+             AND [ep].[class] = 1
+             AND [ep].[name] = N'microsoft_database_tools_support'
+    )
+)
+SELECT 1 ELSE SELECT 0"
+2019-11-25 11:30:19.390 +03:00 [Information] Executing endpoint '"/_Host"'
+2019-11-25 11:30:19.390 +03:00 [Information] Route matched with "{page = \"/_Host\", area = \"\"}". Executing page "/_Host"
+2019-11-25 11:30:19.392 +03:00 [Information] Executing an implicit handler method - ModelState is Valid
+2019-11-25 11:30:19.392 +03:00 [Information] Executed an implicit handler method, returned result "Microsoft.AspNetCore.Mvc.RazorPages.PageResult".
+2019-11-25 11:30:19.401 +03:00 [Information] Executed DbCommand ("1"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT [j].[JobId], [j].[ClientId], [j].[Description], [j].[FreelancerId], [j].[IsCompleted]
+FROM [Jobs] AS [j]"
+2019-11-25 11:30:19.402 +03:00 [Information] Authorization was successful.
+2019-11-25 11:30:19.403 +03:00 [Information] Authorization was successful.
+2019-11-25 11:30:19.405 +03:00 [Information] Executed page "/_Host" in 14.7417ms
+2019-11-25 11:30:19.405 +03:00 [Information] Executed endpoint '"/_Host"'
+2019-11-25 11:30:19.406 +03:00 [Information] Request finished in 22.1865ms 200 text/html; charset=utf-8
+2019-11-25 11:30:19.416 +03:00 [Information] Request starting HTTP/2.0 GET https://localhost:44306/css/site.css  
+2019-11-25 11:30:19.416 +03:00 [Information] Request starting HTTP/2.0 GET https://localhost:44306/css/bootstrap/bootstrap.min.css  
+2019-11-25 11:30:19.417 +03:00 [Information] Request starting HTTP/2.0 GET https://localhost:44306/_framework/blazor.server.js  
+2019-11-25 11:30:19.418 +03:00 [Information] The file "/_framework/blazor.server.js" was not modified
+2019-11-25 11:30:19.418 +03:00 [Information] The file "/css/site.css" was not modified
+2019-11-25 11:30:19.418 +03:00 [Information] The file "/css/bootstrap/bootstrap.min.css" was not modified
+2019-11-25 11:30:19.418 +03:00 [Information] Request finished in 2.2769ms 304 text/css
+2019-11-25 11:30:19.418 +03:00 [Information] Request finished in 1.2142ms 304 application/javascript
+2019-11-25 11:30:19.418 +03:00 [Information] Request finished in 2.1409ms 304 text/css
+2019-11-25 11:30:19.441 +03:00 [Information] Request starting HTTP/2.0 GET https://localhost:44306/css/open-iconic/font/css/open-iconic-bootstrap.min.css  
+2019-11-25 11:30:19.441 +03:00 [Information] The file "/css/open-iconic/font/css/open-iconic-bootstrap.min.css" was not modified
+2019-11-25 11:30:19.442 +03:00 [Information] Request finished in 1.0403ms 304 text/css
+2019-11-25 11:30:19.540 +03:00 [Information] Request starting HTTP/2.0 POST https://localhost:44306/_blazor/negotiate?negotiateVersion=1 text/plain;charset=UTF-8 0
+2019-11-25 11:30:19.541 +03:00 [Information] Entity Framework Core "3.1.0-preview2.19525.5" initialized '"ApplicationDbContext"' using provider '"Microsoft.EntityFrameworkCore.SqlServer"' with options: "None"
+2019-11-25 11:30:19.544 +03:00 [Information] Executed DbCommand ("2"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""
+IF EXISTS
+    (SELECT *
+     FROM [sys].[objects] o
+     WHERE [o].[type] = 'U'
+     AND [o].[is_ms_shipped] = 0
+     AND NOT EXISTS (SELECT *
+         FROM [sys].[extended_properties] AS [ep]
+         WHERE [ep].[major_id] = [o].[object_id]
+             AND [ep].[minor_id] = 0
+             AND [ep].[class] = 1
+             AND [ep].[name] = N'microsoft_database_tools_support'
+    )
+)
+SELECT 1 ELSE SELECT 0"
+2019-11-25 11:30:19.545 +03:00 [Information] Executing endpoint '"/_blazor/negotiate"'
+2019-11-25 11:30:19.546 +03:00 [Information] Executed endpoint '"/_blazor/negotiate"'
+2019-11-25 11:30:19.547 +03:00 [Information] Request finished in 6.1808ms 200 application/json
+2019-11-25 11:30:19.547 +03:00 [Information] Request starting HTTP/2.0 GET https://localhost:44306/css/open-iconic/font/fonts/open-iconic.woff  
+2019-11-25 11:30:19.548 +03:00 [Information] The file "/css/open-iconic/font/fonts/open-iconic.woff" was not modified
+2019-11-25 11:30:19.548 +03:00 [Information] Request finished in 1.3603ms 304 application/font-woff
+2019-11-25 11:30:19.554 +03:00 [Information] Request starting HTTP/1.1 GET https://localhost:44306/_blazor?id=R0NXipWg5VRtpIm0WbDYDA  
+2019-11-25 11:30:19.555 +03:00 [Information] Entity Framework Core "3.1.0-preview2.19525.5" initialized '"ApplicationDbContext"' using provider '"Microsoft.EntityFrameworkCore.SqlServer"' with options: "None"
+2019-11-25 11:30:19.557 +03:00 [Information] Executed DbCommand ("2"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""
+IF EXISTS
+    (SELECT *
+     FROM [sys].[objects] o
+     WHERE [o].[type] = 'U'
+     AND [o].[is_ms_shipped] = 0
+     AND NOT EXISTS (SELECT *
+         FROM [sys].[extended_properties] AS [ep]
+         WHERE [ep].[major_id] = [o].[object_id]
+             AND [ep].[minor_id] = 0
+             AND [ep].[class] = 1
+             AND [ep].[name] = N'microsoft_database_tools_support'
+    )
+)
+SELECT 1 ELSE SELECT 0"
+2019-11-25 11:30:19.558 +03:00 [Information] Executing endpoint '"/_blazor"'
+2019-11-25 11:30:19.573 +03:00 [Information] Entity Framework Core "3.1.0-preview2.19525.5" initialized '"ApplicationDbContext"' using provider '"Microsoft.EntityFrameworkCore.SqlServer"' with options: "None"
+2019-11-25 11:30:19.575 +03:00 [Information] Executed DbCommand ("2"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""
+IF EXISTS
+    (SELECT *
+     FROM [sys].[objects] o
+     WHERE [o].[type] = 'U'
+     AND [o].[is_ms_shipped] = 0
+     AND NOT EXISTS (SELECT *
+         FROM [sys].[extended_properties] AS [ep]
+         WHERE [ep].[major_id] = [o].[object_id]
+             AND [ep].[minor_id] = 0
+             AND [ep].[class] = 1
+             AND [ep].[name] = N'microsoft_database_tools_support'
+    )
+)
+SELECT 1 ELSE SELECT 0"
+2019-11-25 11:30:19.576 +03:00 [Information] Executed DbCommand ("0"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT [j].[JobId], [j].[ClientId], [j].[Description], [j].[FreelancerId], [j].[IsCompleted]
+FROM [Jobs] AS [j]"
+2019-11-25 11:30:19.576 +03:00 [Information] Authorization was successful.
+2019-11-25 11:30:19.576 +03:00 [Information] Authorization was successful.
