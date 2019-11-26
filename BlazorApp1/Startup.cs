@@ -15,6 +15,7 @@ using EmbeddedBlazorContent;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
+using BlazorChatSample.Server.Hubs;
 
 namespace BlazorApp1
 {
@@ -106,6 +107,7 @@ namespace BlazorApp1
 				endpoints.MapControllers();
 				endpoints.MapBlazorHub();
 				endpoints.MapFallbackToPage("/_Host");
+				endpoints.MapHub<ChatHub>("/chathub");
 			});
 		}
 	}

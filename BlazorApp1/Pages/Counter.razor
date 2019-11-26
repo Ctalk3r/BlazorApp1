@@ -1,16 +1,92 @@
 ﻿@page "/counter"
+@using Microsoft.AspNetCore.SignalR.Client
+@inject AuthenticationStateProvider AuthenticationStateProvider
 
-<h1>Counter</h1>
+<AuthorizeView>
+    <Authorized>
+        <div class="content px-4">
 
-<p>Current count: @currentCount</p>
+            <h1>Blazor SignalR Chat Sample</h1>
 
-<button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
+
+            @if (chatting)
+            {
+                <div id="scrollbox">
+
+                    @foreach (var item in messages)
+                    {
+                        <div class="@item.Side">
+                            <div class="user">@item.Username</div>
+                            <div class="msg">@item.Body</div>
+                        </div>
+                    }
+                    <hr />
+                    <textarea class="input-lg" placeholder="enter your comment" @bind="@newMessage"></textarea>
+                    <button class="btn btn-primary" @onclick=@Send>Send</button>
+                </div>
+            }
+        </div>
+    </Authorized>
+</AuthorizeView>
+
 
 @code {
-    private int currentCount = 0;
+    bool chatting = true;
+    string newMessage = null;
+    string userName = null;
 
-    private void IncrementCount()
+    List<Message> messages = new List<Message>();
+
+
+    HubConnection connection;
+
+    protected async override Task OnInitializedAsync()
     {
-        currentCount++;
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+        userName = user.Identity.Name;
+
+        //Initialize SignalR
+        connection = new HubConnectionBuilder()
+        .WithUrl("https://localhost:44306/chathub")
+        .Build();
+
+        connection.On<string, string>("NotifyUser", NotifyUser);
+        await connection.StartAsync();
+
+    }
+
+    Task NotifyUser(string name, string message)
+    {
+        messages.Add(new Message(name, message, true));
+        StateHasChanged();
+        return Task.CompletedTask;
+    }
+
+    async Task Send()
+    {
+        await connection.InvokeAsync("SendMessage", userName, newMessage, "1");
+    }
+
+
+    class Message
+    {
+        public Message(string username, string body, bool isMine)
+        {
+            Username = username;
+            Body = body;
+            IsMine = isMine;
+        }
+
+        public string Username { get; set; }
+        public string Body { get; set; }
+        public bool IsMine { get; set; }
+        public string Side
+        {
+            get
+            {
+                return IsMine ? "sent" : "received";
+            }
+        }
     }
 }
