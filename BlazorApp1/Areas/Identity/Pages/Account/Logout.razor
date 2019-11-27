@@ -1,0 +1,17 @@
+﻿@page "/Identity/Account/LogOut"
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject SignInManager<User> SignInManager
+@code
+    {
+        protected override async Task OnInitializedAsync()
+        {
+            var myProvider = AuthenticationStateProvider as CustomAuthenticationStateProvider;
+            var authState = await myProvider.GetAuthenticationStateAsync();
+            if (authState.User.Identity.IsAuthenticated)
+            {
+                myProvider.MarkAsNonAuthentificated();
+            }
+        }
+    }
+
+

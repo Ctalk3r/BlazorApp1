@@ -28,7 +28,6 @@ namespace BlazorApp1.Migrations
                     Id = table.Column<string>(nullable: false),
                     UserName = table.Column<string>(maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(maxLength: 256, nullable: true),
-                    Email = table.Column<string>(maxLength: 256, nullable: true),
                     NormalizedEmail = table.Column<string>(maxLength: 256, nullable: true),
                     EmailConfirmed = table.Column<bool>(nullable: false),
                     PasswordHash = table.Column<string>(nullable: true),
@@ -40,12 +39,20 @@ namespace BlazorApp1.Migrations
                     LockoutEnd = table.Column<DateTimeOffset>(nullable: true),
                     LockoutEnabled = table.Column<bool>(nullable: false),
                     AccessFailedCount = table.Column<int>(nullable: false),
+                    Email = table.Column<string>(maxLength: 256, nullable: true),
                     FirstName = table.Column<string>(nullable: true),
                     SecondName = table.Column<string>(nullable: true),
                     ImageSource = table.Column<string>(nullable: true),
                     Country = table.Column<string>(nullable: true),
                     City = table.Column<string>(nullable: true),
-                    RegistrationDate = table.Column<DateTime>(nullable: false)
+                    Role = table.Column<string>(nullable: true),
+                    RegistrationDate = table.Column<DateTime>(nullable: false),
+                    Title = table.Column<string>(nullable: true),
+                    CV = table.Column<string>(nullable: true),
+                    HourlyRate = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
+                    Education = table.Column<string>(nullable: true),
+                    Skills = table.Column<string>(nullable: true),
+                    Rating = table.Column<double>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -56,14 +63,14 @@ namespace BlazorApp1.Migrations
                 name: "Jobs",
                 columns: table => new
                 {
-                    JobId = table.Column<Guid>(nullable: false),
+                    JobId = table.Column<string>(nullable: false),
                     Title = table.Column<string>(nullable: true),
                     Description = table.Column<string>(nullable: true),
                     Status = table.Column<int>(nullable: false),
                     EstimatedTime = table.Column<TimeSpan>(nullable: false),
-                    HourlyRate = table.Column<int>(nullable: false),
-                    ClientId = table.Column<Guid>(nullable: false),
-                    FreelancerId = table.Column<Guid>(nullable: false)
+                    HourlyRate = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
+                    ClientId = table.Column<string>(nullable: true),
+                    FreelancerId = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {

@@ -21,12 +21,12 @@ namespace BlazorApp1.Migrations
 
             modelBuilder.Entity("BlazorApp1.Models.Job", b =>
                 {
-                    b.Property<Guid>("JobId")
+                    b.Property<string>("JobId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("nvarchar(450)");
 
-                    b.Property<Guid>("ClientId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("ClientId")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
@@ -34,11 +34,11 @@ namespace BlazorApp1.Migrations
                     b.Property<TimeSpan>("EstimatedTime")
                         .HasColumnType("time");
 
-                    b.Property<Guid>("FreelancerId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("FreelancerId")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("HourlyRate")
-                        .HasColumnType("int");
+                    b.Property<decimal>("HourlyRate")
+                        .HasColumnType("decimal(10,2)");
 
                     b.Property<int>("Status")
                         .HasColumnType("int");
@@ -59,6 +59,9 @@ namespace BlazorApp1.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
 
+                    b.Property<string>("CV")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("City")
                         .HasColumnType("nvarchar(max)");
 
@@ -67,6 +70,9 @@ namespace BlazorApp1.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Country")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Education")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Email")
@@ -78,6 +84,9 @@ namespace BlazorApp1.Migrations
 
                     b.Property<string>("FirstName")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("HourlyRate")
+                        .HasColumnType("decimal(10,2)");
 
                     b.Property<string>("ImageSource")
                         .HasColumnType("nvarchar(max)");
@@ -105,14 +114,26 @@ namespace BlazorApp1.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
 
+                    b.Property<double>("Rating")
+                        .HasColumnType("float");
+
                     b.Property<DateTime>("RegistrationDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("Role")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SecondName")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SecurityStamp")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Skills")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Title")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("TwoFactorEnabled")

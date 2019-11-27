@@ -50,13 +50,23 @@ namespace BlazorApp1
 			services.Configure<EmailSettings>(Configuration.GetSection("EmailSettings"));
 			services.AddSingleton<IEmailSender, EmailSender>();
 			services.AddRazorPages();
+			//services.AddSession();
+			//services.AddMemoryCache();
 			services.AddServerSideBlazor();
-			services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<IdentityUser>>();
+			services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
 			services.AddSingleton<WeatherForecastService>();
 
 			services.AddHttpContextAccessor();
 			services.AddScoped<HttpContextAccessor>();
-
+			services.AddMatToaster(config =>
+			{
+				config.Position = MatToastPosition.BottomRight;
+				config.PreventDuplicates = true;
+				config.NewestOnTop = true;
+				config.ShowCloseButton = true;
+				config.MaximumOpacity = 95;
+				config.VisibleStateDuration = 3000;
+			});
 			services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
 				.AddCookie();
 			services.AddAuthentication()
