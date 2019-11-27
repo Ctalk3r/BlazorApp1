@@ -5,28 +5,29 @@
 @inject ApplicationDbContext db
 @inject NavigationManager NavigationManager
 
-<AuthorizeView Roles="admin">
+<AuthorizeView>
     <NotAuthorized>
         <button class="btn btn-primary" @onclick="RunOnClick">
             SimpleButton
         </button>
     </NotAuthorized>
     <Authorized>
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Description</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var job in Jobs)
-                {
-                    <tr>
-                        <td>@job.Description</td>
-                    </tr>
-                }
-            </tbody>
-        </table>
+        <h1>Current Feed</h1>
+        @if (context.User.IsInRole("freelancer"))
+        {
+
+            @foreach (var job in Jobs)
+            {
+                <div class="container">
+                    <h2>job.Title</h2>
+                    <strong>
+                        job.Descrition
+                    </strong>
+                </div>
+            }
+
+        }
+
     </Authorized>
 </AuthorizeView>
 
@@ -40,7 +41,7 @@
     }
     private List<Job> Jobs;
 
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
         Jobs = db.Jobs.ToList();
     }

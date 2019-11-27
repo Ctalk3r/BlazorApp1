@@ -57,8 +57,11 @@ namespace BlazorApp1.Migrations
                 columns: table => new
                 {
                     JobId = table.Column<Guid>(nullable: false),
+                    Title = table.Column<string>(nullable: true),
                     Description = table.Column<string>(nullable: true),
-                    IsCompleted = table.Column<bool>(nullable: false),
+                    Status = table.Column<int>(nullable: false),
+                    EstimatedTime = table.Column<TimeSpan>(nullable: false),
+                    HourlyRate = table.Column<int>(nullable: false),
                     ClientId = table.Column<Guid>(nullable: false),
                     FreelancerId = table.Column<Guid>(nullable: false)
                 },
