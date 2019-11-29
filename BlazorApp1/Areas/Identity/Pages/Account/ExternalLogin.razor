@@ -1,0 +1,29 @@
+﻿@page "/Identity/Account/ExternalLogin"
+@page "/Identity/Account/ExternalLogin/{provider}"
+
+@inject NavigationManager _navigationManager
+@inject SignInManager<User>  _signInManager
+
+@code {
+    [Parameter]
+    public string Provider { get; set; }
+
+    protected override void OnInitialized()
+    {
+        OnGet();
+    }
+
+    protected ChallengeResult OnGet()
+    {
+        // "/Identity/Account/ExternalLogin?returnUrl=%2F&handler=Callback"
+        var redirectUrl = $"{ _navigationManager.Uri.Substring(0, _navigationManager.Uri.Length - Provider.Length - 1)}?handler=ExternalLoginCallback";
+        // StateHasChanged();
+        var properties = _signInManager.ConfigureExternalAuthenticationProperties(Provider, "Identity/Account/Login");
+        return new ChallengeResult(Provider, properties);
+    }
+
+    public async Task ExternalLoginCallback(string returnUrl = null, string remoteError = null)
+    {
+        var info = await _signInManager.GetExternalLoginInfoAsync();
+    }
+}

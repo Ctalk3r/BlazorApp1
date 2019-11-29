@@ -1,17 +1,19 @@
 ﻿@page "/Identity/Account/LogOut"
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject SignInManager<User> SignInManager
+@inject NavigationManager _navigationManager
 @code
     {
-        protected override async Task OnInitializedAsync()
+    protected override async Task OnInitializedAsync()
+    {
+        var myProvider = AuthenticationStateProvider as CustomAuthenticationStateProvider;
+        var authState = await myProvider.GetAuthenticationStateAsync();
+        if (authState.User.Identity.IsAuthenticated)
         {
-            var myProvider = AuthenticationStateProvider as CustomAuthenticationStateProvider;
-            var authState = await myProvider.GetAuthenticationStateAsync();
-            if (authState.User.Identity.IsAuthenticated)
-            {
-                myProvider.MarkAsNonAuthentificated();
-            }
+            myProvider.MarkAsNonAuthentificated();
+            _navigationManager.NavigateTo("/");
         }
+    }
     }
 
 

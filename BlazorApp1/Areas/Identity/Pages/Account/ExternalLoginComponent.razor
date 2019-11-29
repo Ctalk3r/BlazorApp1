@@ -1,4 +1,6 @@
-﻿@using Microsoft.AspNetCore.Authentication;
+﻿@inject NavigationManager _navigationManager
+
+@using Microsoft.AspNetCore.Authentication;
 <div class="col-md-6 col-md-offset-2">
     <section>
         <h4>Use another service to @Form.</h4>
@@ -15,12 +17,12 @@
             }
             else
             {
-                <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="/" method="post" class="form-horizontal">
+                <form id="external-account" class="form-horizontal">
                     <div>
                         <p>
                             @foreach (var provider in @ExternalLogins)
                             {
-                                <button type="submit" class="btn btn-primary" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">@provider.DisplayName</button>
+                                <button @onclick="@(() => OnExternalLoginAsync(provider.Name))" class="btn btn-primary" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">@provider.DisplayName</button>
                             }
                         </p>
                     </div>
@@ -36,4 +38,9 @@
     public string Form { get; set; }
     [Parameter]
     public IList<AuthenticationScheme> ExternalLogins { get; set; }
+
+    protected void OnExternalLoginAsync(string provider)
+    {
+        _navigationManager.NavigateTo("/Identity/Account/ExternalLogin/" + provider);
+    }
 }

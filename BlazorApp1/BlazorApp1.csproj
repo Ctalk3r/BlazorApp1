@@ -32,7 +32,6 @@
 
   <ItemGroup>
     <Folder Include="Areas\Identity\Pages\Account\Manage\Admin\" />
-    <Folder Include="Areas\Identity\Pages\Shared\" />
   </ItemGroup>
 
   <ProjectExtensions><VisualStudio><UserProperties appsettings_1json__JsonSchema="" /></VisualStudio></ProjectExtensions>
