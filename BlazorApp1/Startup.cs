@@ -54,6 +54,7 @@ namespace BlazorApp1
 			//services.AddMemoryCache();
 			services.AddServerSideBlazor();
 			services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
+			services.AddScoped<IdentityMiddleware>();
 			services.AddSingleton<WeatherForecastService>();
 
 			services.AddHttpContextAccessor();
@@ -109,6 +110,7 @@ namespace BlazorApp1
 
 			app.UseAuthentication();
 			app.UseAuthorization();
+			app.UseMiddleware<IdentityMiddleware>();
 
 			app.UseEmbeddedBlazorContent(typeof(BaseMatComponent).Assembly);
 

@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using BlazorApp1.Data;
 using BlazorApp1.Models;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Server;
@@ -26,6 +27,10 @@ namespace BlazorApp1.Areas.Identity
         {
             this.context = context;
         }
+
+        public static bool IsAuthentificating { get; set; }
+        public static AuthenticationProperties Properties { get; set; }
+        public static string Provider { get; set; }
 
         private static bool IsAuthorized { get; set; }
 
@@ -61,7 +66,8 @@ namespace BlazorApp1.Areas.Identity
         {
             var user = await userManager.FindByNameAsync(username);
 
-            if (user != null && userManager.PasswordHasher.VerifyHashedPassword(user, user.PasswordHash, password) != 
+            if (user != null && user.PasswordHash != null &&
+                userManager.PasswordHasher.VerifyHashedPassword(user, user.PasswordHash, password) != 
                                                                                 PasswordVerificationResult.Failed)
             {
                 return true;

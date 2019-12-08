@@ -1,29 +1,125 @@
 ﻿@page "/Identity/Account/ExternalLogin"
-@page "/Identity/Account/ExternalLogin/{provider}"
 
+@using Microsoft.AspNetCore.Http
 @inject NavigationManager _navigationManager
 @inject SignInManager<User>  _signInManager
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject UserManager<User> _userManager
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject HttpContextAccessor _httpContextAccessor
+@inject IHttpContextAccessor _httpContextAccessor
+@inject IEmailSender  _emailSender
+@inject IMatToaster Toaster
+
+<h4>Associate your @Provider account.</h4>
+<hr />
+
+<p class="text-info">
+    You've successfully authenticated with <strong>@Provider</strong>.
+    Please enter an email address for this site below and click the Register button to finish
+    logging in.
+</p>
+
+<div class="row">
+    <div class="col-md-4">
+        <EditForm Model="@externalLoginModel" OnValidSubmit="@OnConfirmAsync">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+            <div class="form-group">
+                <label for="email">Email</label>
+                <InputText id="email" @bind-Value="externalLoginModel.Email" class="form-control" />
+            </div>
+            <p>
+                <button type="submit" class="btn btn-primary">Register</button>
+            </p>
+        </EditForm>
+    </div>
+</div>
+
 
 @code {
-    [Parameter]
+
+    private ExternalLoginModel externalLoginModel = new ExternalLoginModel();
+
+    public static bool IsSuccesseded { get; set; }
     public string Provider { get; set; }
 
-    protected override void OnInitialized()
+    private ValidationMessageStore _messageStore;
+    [CascadingParameter] EditContext CurrentEditContext { get; set; }
+    public static ExternalLoginInfo info = null;
+
+    protected override async Task OnInitializedAsync()
     {
-        OnGet();
+        if (!_httpContextAccessor.HttpContext.Response.HasStarted)
+        {
+            info = await _signInManager.GetExternalLoginInfoAsync();
+            var result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false, bypassTwoFactor: false);
+
+            if (result.Succeeded)
+            {
+                var myProvider = AuthenticationStateProvider as CustomAuthenticationStateProvider;
+                var authState = await myProvider.GetAuthenticationStateAsync();
+                myProvider.MarkAsAuthentificated(info.Principal.FindFirstValue(ClaimTypes.Email), _userManager);
+                IsSuccesseded = true;
+            }
+        }
+        if (info != null)
+        {
+            Provider = info.ProviderDisplayName;
+            if (info.Principal.HasClaim(c => c.Type == ClaimTypes.Email))
+            {
+                externalLoginModel.Email = info.Principal.FindFirstValue(ClaimTypes.Email);
+            }
+        }
     }
 
-    protected ChallengeResult OnGet()
+    protected override void OnAfterRender(bool firstRender)
     {
-        // "/Identity/Account/ExternalLogin?returnUrl=%2F&handler=Callback"
-        var redirectUrl = $"{ _navigationManager.Uri.Substring(0, _navigationManager.Uri.Length - Provider.Length - 1)}?handler=ExternalLoginCallback";
-        // StateHasChanged();
-        var properties = _signInManager.ConfigureExternalAuthenticationProperties(Provider, "Identity/Account/Login");
-        return new ChallengeResult(Provider, properties);
+        if (IsSuccesseded == true)
+        {
+            IsSuccesseded = false;
+            Toaster.Add($"Login as {info.Principal.FindFirstValue(ClaimTypes.Email)}", MatToastType.Success, "Success", "code");
+            _navigationManager.NavigateTo("/");
+        }
+        base.OnAfterRender(firstRender);
     }
 
-    public async Task ExternalLoginCallback(string returnUrl = null, string remoteError = null)
+    protected async Task OnConfirmAsync(EditContext context = null)
     {
-        var info = await _signInManager.GetExternalLoginInfoAsync();
+        CurrentEditContext = context;
+        _messageStore = new ValidationMessageStore(CurrentEditContext);
+        CurrentEditContext.OnValidationRequested += (s, e) => _messageStore.Clear();
+        CurrentEditContext.OnFieldChanged += (s, e) => _messageStore.Clear(e.FieldIdentifier);
+
+        var user = new User { UserName = externalLoginModel.Email, Email = externalLoginModel.Email, EmailConfirmed = true };
+        var result = await _userManager.CreateAsync(user);
+        if (result.Succeeded)
+        {
+            await _userManager.AddLoginAsync(user, info);
+
+            var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+            code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+            var callbackUrl = $"{_navigationManager.Uri}/ConfirmEmail?userId={user.Id}&code={code}";
+
+            try
+            {
+                await _emailSender.SendEmailAsync(externalLoginModel.Email, "Confirm your email",
+                    $"You've registred on BlazorApp1 site. And now please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                var myProvider = AuthenticationStateProvider as CustomAuthenticationStateProvider;
+                myProvider.MarkAsAuthentificated(externalLoginModel.Email, _userManager);
+                // await _signInManager.SignInAsync(user, isPersistent: false);
+                Toaster.Add($"externalLogin as {externalLoginModel.Email}", MatToastType.Success, "Success", "code");
+                _navigationManager.NavigateTo("/");
+            }
+            catch (Exception exception)
+            {
+                _messageStore.Add(CurrentEditContext.Field(string.Empty), exception.Message);
+            }
+        }
+        foreach (var err in result.Errors)
+        {
+            _messageStore.Add(CurrentEditContext.Field(string.Empty), err.Description);
+        }
+        CurrentEditContext.NotifyValidationStateChanged();
     }
 }

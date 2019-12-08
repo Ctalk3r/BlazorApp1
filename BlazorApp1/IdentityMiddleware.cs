@@ -2,24 +2,39 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication.Google;
+using BlazorApp1.Areas.Identity;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Http;
+using System.Threading;
+using BlazorApp1.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace BlazorApp1
 {
-    public class IdentityMiddleware
+    public class IdentityMiddleware : IMiddleware
     {
-        private RequestDelegate _next;
-        public IdentityMiddleware(RequestDelegate next)
+        AuthenticationStateProvider myProvider;
+        SignInManager<User> _signInManager;
+
+        public IdentityMiddleware(AuthenticationStateProvider authenticationStateProvider, SignInManager<User> signInManager)
         {
-            _next = next;
+            myProvider = authenticationStateProvider as CustomAuthenticationStateProvider;
+            _signInManager = signInManager;
         }
-        public async Task InvokeAsync(HttpContext context)
+        public async Task InvokeAsync(HttpContext context, RequestDelegate next)
         {
-            if (!context.Request.Cookies.ContainsKey("token"))
+            if (CustomAuthenticationStateProvider.IsAuthentificating == true)
             {
-                context.Response.Cookies.Append("token", Guid.NewGuid().ToString());
+                context.Response.OnStarting(async () =>
+                {
+                    await context.ChallengeAsync(CustomAuthenticationStateProvider.Provider,
+                                                 CustomAuthenticationStateProvider.Properties);
+                });
+                CustomAuthenticationStateProvider.IsAuthentificating = false;
             }
-            await _next.Invoke(context);
+            await next(context);
         }
     }
 }
