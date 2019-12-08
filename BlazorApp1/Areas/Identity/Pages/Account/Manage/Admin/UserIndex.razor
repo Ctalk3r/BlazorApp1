@@ -1,0 +1,82 @@
+﻿@page  "/Identity/Account/Admin/UserIndex"
+@attribute [Authorize(Roles = "admin")]
+@using System.Threading
+@inject UserManager<User> _userManager
+@inject IMatToaster Toaster
+
+<AuthorizeView Roles="admin">
+    <h4>User's list</h4>
+    <hr />
+    <table class="table">
+        @foreach (var user in UsersList)
+        {
+            <tr>
+                <td>@user.Email</td>
+                <td>
+                    <a class="btn btn-sm btn-primary" href="/Identity/Account/Admin/UserEdit?userId=@user.Id">Change</a>
+                    <MatButton OnClick="() => OnDelete(user.Id)">Delete</MatButton>
+                    <MatSnackbar @bind-IsOpen="@snackBarIsOpen" Leading="true">
+                        <MatSnackbarContent>@user.Email was deleted</MatSnackbarContent>
+                        <MatSnackbarActions>
+                            <MatButton Raised="true" OnClick="Undo">Undo</MatButton>
+                        </MatSnackbarActions>
+                    </MatSnackbar>
+                </td>
+            </tr>
+        }
+    </table>
+    <a class="btn btn-primary" href="/Identity/Account/Admin/UserCreate">Add user</a>
+</AuthorizeView>
+
+@code {
+    bool snackBarIsOpen = false;
+    [BindProperty]
+    public List<User> UsersList { get; set; }
+    CancellationTokenSource cancelTokenSource;
+    protected override void OnInitialized()
+    {
+        UsersList = _userManager.Users.ToList();
+    }
+
+    protected async Task OnDelete(string id)
+    {
+        if (snackBarIsOpen)
+            return;
+        User user = await _userManager.FindByIdAsync(id);
+        if (user != null && !await _userManager.IsInRoleAsync(user, "admin"))
+        {
+            snackBarIsOpen = true;
+            cancelTokenSource = new CancellationTokenSource();
+            CancellationToken token = cancelTokenSource.Token;
+            Task task = new Task(async () => await InternalDelete(user, token));
+            task.Start();
+        }
+        else
+        {
+            Toaster.Add("Access Denied", MatToastType.Danger, "Error", "code");
+        }
+    }
+
+    private async Task InternalDelete(User user, CancellationToken token)
+    {
+
+        for (int i = 0; i < 100; i++)
+        {
+            if (token.IsCancellationRequested)
+            {
+                return;
+            }
+            Thread.Sleep(100);
+        }
+
+        UsersList.Remove(user);
+        await _userManager.DeleteAsync(user);
+    }
+
+    protected void Undo()
+    {
+        cancelTokenSource.Cancel();
+        snackBarIsOpen = false;
+        Toaster.Add("Cancelled", MatToastType.Light, "Message", "code");
+    }
+}

@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using BlazorChatSample.Server.Hubs;
+using Blazored.SessionStorage;
 
 namespace BlazorApp1
 {
@@ -52,6 +53,7 @@ namespace BlazorApp1
 			services.AddRazorPages();
 			//services.AddSession();
 			//services.AddMemoryCache();
+			services.AddBlazoredSessionStorage();
 			services.AddServerSideBlazor();
 			services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
 			services.AddScoped<IdentityMiddleware>();

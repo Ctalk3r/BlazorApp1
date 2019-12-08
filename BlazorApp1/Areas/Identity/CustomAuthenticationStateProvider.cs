@@ -21,11 +21,16 @@ namespace BlazorApp1.Areas.Identity
 	public class CustomAuthenticationStateProvider : RevalidatingIdentityAuthenticationStateProvider<User>
 	{
         private UserManager<User> context;
-        private static string username;
+        private Blazored.SessionStorage.ISessionStorageService _sessionStorage;
+        private string username;
 
-        public CustomAuthenticationStateProvider(ILoggerFactory loggerFactory, IServiceScopeFactory scopeFactory, IOptions<IdentityOptions> optionsAccessor, UserManager<User> context) : base(loggerFactory, scopeFactory, optionsAccessor)
+        public CustomAuthenticationStateProvider(ILoggerFactory loggerFactory, IServiceScopeFactory scopeFactory,
+                                        Blazored.SessionStorage.ISessionStorageService sessionStorage,
+                                            IOptions<IdentityOptions> optionsAccessor, UserManager<User> context)
+                                        : base(loggerFactory, scopeFactory, optionsAccessor)
         {
             this.context = context;
+            _sessionStorage = sessionStorage;
         }
 
         public static bool IsAuthentificating { get; set; }
@@ -38,8 +43,19 @@ namespace BlazorApp1.Areas.Identity
         {
             if (context != null)
             {
-                if (IsAuthorized)
+                try
                 {
+                    username = await _sessionStorage.GetItemAsync<string>("name");
+
+                }
+                catch (Exception e)
+                {
+
+                }
+
+                if (username != null && IsAuthorized)
+                {
+
                     var user = await context.FindByEmailAsync(username);
 
                     var identity = new ClaimsIdentity(new[]
@@ -75,9 +91,10 @@ namespace BlazorApp1.Areas.Identity
             return false;
         }
 
-        public void MarkAsAuthentificated(string username, UserManager<User> context)
+        public async Task MarkAsAuthentificated(string username, UserManager<User> context)
         {
-            CustomAuthenticationStateProvider.username = username;
+            await _sessionStorage.SetItemAsync("name", username);
+            this.username = username;
             this.context = context;
             IsAuthorized = true;
             base.NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());

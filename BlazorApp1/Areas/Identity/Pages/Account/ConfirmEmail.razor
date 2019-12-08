@@ -1,0 +1,42 @@
+﻿@page "/Identity/Account/Email/ConfirmEmail"
+
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject SignInManager<User> _signInManager
+@inject UserManager<User> _userManager
+@inject NavigationManager  _navigationManager
+@inject IMatToaster Toaster
+
+<h3>ConfirmEmail</h3>
+
+@code {
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        string userId = null;
+        string code = null;
+
+        if (QueryHelpers.ParseQuery(_navigationManager.ToAbsoluteUri(_navigationManager.Uri).Query).
+                                                    TryGetValue("userId", out var param))
+        {
+            userId = param;
+        }
+        if (QueryHelpers.ParseQuery(_navigationManager.ToAbsoluteUri(_navigationManager.Uri).Query).
+                                                    TryGetValue("code", out param))
+        {
+            code = param;
+        }
+        if (userId == null || code == null)
+        {
+            _navigationManager.NavigateTo("/");
+        }
+        var user = await _userManager.FindByIdAsync(userId);
+
+        code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code));
+        var result = await _userManager.ConfirmEmailAsync(user, code);
+        if (result.Succeeded)
+            Toaster.Add("Thank you for confirming your email", MatToastType.Success, "Success", "code");
+        else
+            Toaster.Add("Error confirming your email", MatToastType.Danger, "Failure", "code");
+        _navigationManager.NavigateTo("/");
+    }
+
+}

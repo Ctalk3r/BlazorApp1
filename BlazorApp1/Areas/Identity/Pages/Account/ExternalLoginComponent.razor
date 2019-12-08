@@ -1,6 +1,7 @@
 ﻿@inject NavigationManager _navigationManager
 
-@using Microsoft.AspNetCore.Authentication;
+@using Microsoft.AspNetCore.Authentication
+@using System.Threading
 @using Microsoft.AspNetCore.Http
 @inject NavigationManager _navigationManager
 @inject AuthenticationStateProvider AuthenticationStateProvider
@@ -46,6 +47,7 @@
     [Parameter]
     public IList<AuthenticationScheme> ExternalLogins { get; set; }
 
+
     protected void OnExternalLoginAsync(string provider)
     {
         var currentUri = _navigationManager.ToBaseRelativePath(_navigationManager.Uri);
@@ -53,10 +55,13 @@
         var properties = _signInManager.ConfigureExternalAuthenticationProperties(provider,
                                                         "/Identity/Account/ExternalLogin");
 
-        // var t = new ChallengeResult(provider, properties);
         var myProvider = AuthenticationStateProvider as CustomAuthenticationStateProvider;
         CustomAuthenticationStateProvider.IsAuthentificating = true;
         CustomAuthenticationStateProvider.Provider = provider;
         CustomAuthenticationStateProvider.Properties = properties;
+
+        //var query = new Dictionary<string, string> { { "provider", $"{provider}" },
+        //                                            {"redirectUri", $"/Identity/Account/ExternalLogin"} };
+        //_navigationManager.NavigateTo(QueryHelpers.AddQueryString("/Identity/Account/ExternalLogin", query));
     }
 }

@@ -1,0 +1,64 @@
+﻿@page "/Identity/Account/Email/ConfirmEmailChange"
+
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject SignInManager<User> _signInManager
+@inject UserManager<User> _userManager
+@inject NavigationManager  _navigationManager
+@inject IMatToaster Toaster
+
+<h3>ConfirmEmailChange</h3>
+
+@code {
+    IdentityResult result = null, setUserNameResult = null;
+    private static IdentityResult firstRender = null;
+    protected override async Task OnInitializedAsync()
+    {
+        string userId = null;
+        string code = null;
+        string email = null;
+
+        if (QueryHelpers.ParseQuery(_navigationManager.ToAbsoluteUri(_navigationManager.Uri).Query).
+                                                    TryGetValue("userId", out var param))
+        {
+            userId = param;
+        }
+        if (QueryHelpers.ParseQuery(_navigationManager.ToAbsoluteUri(_navigationManager.Uri).Query).
+                                                    TryGetValue("email", out param))
+        {
+            email = param;
+        }
+        if (QueryHelpers.ParseQuery(_navigationManager.ToAbsoluteUri(_navigationManager.Uri).Query).
+                                                    TryGetValue("code", out param))
+        {
+            code = param;
+        }
+        if (userId == null || code == null)
+        {
+            _navigationManager.NavigateTo("/");
+        }
+        var user = await _userManager.FindByIdAsync(userId);
+
+        code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code));
+        result = result ?? await _userManager.ChangeEmailAsync(user, email, code);
+
+
+        if (firstRender == null)
+        {
+            await _signInManager.RefreshSignInAsync(user);
+            setUserNameResult = setUserNameResult ?? await _userManager.SetUserNameAsync(user, email);
+        }
+
+        firstRender = result;
+    }
+
+    protected override void OnAfterRender(bool f)
+    {
+        firstRender = null;
+        if (result.Succeeded)
+            Toaster.Add("Thank you for confirming your email", MatToastType.Success, "Success", "code");
+        else
+            Toaster.Add("Error changing email", MatToastType.Danger, "Failure", "code");
+        _navigationManager.NavigateTo("/");
+
+    }
+}

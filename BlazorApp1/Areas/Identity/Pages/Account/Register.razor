@@ -43,6 +43,11 @@
         [CascadingParameter] EditContext CurrentEditContext { get; set; }
         protected override async Task OnInitializedAsync()
         {
+            if (QueryHelpers.ParseQuery(_navigationManager.ToAbsoluteUri(_navigationManager.Uri).Query).
+                                                        TryGetValue("provider", out var param))
+            {
+                _navigationManager.NavigateTo("/Identity/Account/ExternalLogin");
+            }
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
         }
         protected async Task OnRegisterAsync(EditContext context)
@@ -65,7 +70,7 @@
                     await _emailSender.SendEmailAsync(registerModel.Email, "Confirm your email",
                      $"You've registred on BlazorApp1 site. And now please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
                     var myProvider = AuthenticationStateProvider as CustomAuthenticationStateProvider;
-                    myProvider.MarkAsAuthentificated(registerModel.Email, _userManager);
+                    await myProvider.MarkAsAuthentificated(registerModel.Email, _userManager);
                     // await _signInManager.SignInAsync(user, isPersistent: false);
                     Toaster.Add($"Login as {registerModel.Email}", MatToastType.Success, "Success", "code");
                     _navigationManager.NavigateTo("/");

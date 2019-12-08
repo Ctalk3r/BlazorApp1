@@ -54,6 +54,11 @@
     IList<AuthenticationScheme> ExternalLogins { get; set; }
     protected override async Task OnInitializedAsync()
     {
+        if (QueryHelpers.ParseQuery(_navigationManager.ToAbsoluteUri(_navigationManager.Uri).Query).
+                                                    TryGetValue("provider", out var param))
+        {
+            _navigationManager.NavigateTo("/Identity/Account/ExternalLogin");
+        }
         ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
     }
     protected async Task OnLoginAsync()
@@ -64,7 +69,7 @@
         {
             if (await myProvider.CanSignIn(loginModel.Email, loginModel.Password, _userManager))
             {
-                myProvider.MarkAsAuthentificated(loginModel.Email, _userManager);
+                await myProvider.MarkAsAuthentificated(loginModel.Email, _userManager);
                 Toaster.Add($"Login as {loginModel.Email}", MatToastType.Success, "Success", "code");
 
                 _navigationManager.NavigateTo("/");
