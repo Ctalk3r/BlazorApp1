@@ -1,0 +1,134 @@
+﻿@page  "/Identity/Account/Admin/UserEdit"
+@attribute [Authorize(Roles = "admin")]
+@inject UserManager<User> _userManager
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject RoleManager<IdentityRole> _roleManager
+@inject NavigationManager _navigationManager
+@inject ApplicationDbContext _applicationDbContext
+@inject IMatToaster Toaster
+
+<h3>UserEdit</h3>
+<EditForm Model="profileModel" OnValidSubmit="OnEditAsync">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <div class="form-group">
+        <input type="hidden" asp-for="Input.Id" />
+    </div>
+    <div class="form-group">
+        <label for="firstName">FirstName</label>
+        <InputText id="firstName" @bind-Value="profileModel.FirstName" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label for="secondName">SecondName</label>
+        <InputText id="secondName" @bind-Value="profileModel.SecondName" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label for="phoneNumber">PhoneNumber</label>
+        <InputText id="phoneNumber" @bind-Value="profileModel.PhoneNumber" class="form-control" />
+    </div>
+    <label for="classification">Roles: </label>
+    <div class="form-group">
+        <InputSelect id="classification" @bind-Value="UserRole">
+            <option value="">Select role ...</option>
+            <option value="freelancer">Freelancer</option>
+            <option value="client">Client</option>
+            <option value="admin">Admin</option>
+        </InputSelect>
+    </div>
+    <div class="form-group">
+        <button type="submit" class="btn btn-warning">Сохранить</button>
+    </div>
+</EditForm>
+@code {
+    private readonly string adminName = "mivladi99@yandex.ru";
+    ProfileModel profileModel = new ProfileModel();
+    public List<IdentityRole> AllRoles { get; set; } = new List<IdentityRole>();
+    public string UserRole { get; set; }
+    private User user;
+    private ValidationMessageStore _messageStore;
+    [CascadingParameter] EditContext CurrentEditContext { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        string userId = null;
+        if (QueryHelpers.ParseQuery(_navigationManager.ToAbsoluteUri(_navigationManager.Uri).Query).
+                                                    TryGetValue("userId", out var param))
+        {
+            userId = param;
+
+        }
+        else
+        {
+            _navigationManager.NavigateTo("/Identity/Account/Admin/UserEdit");
+        }
+        user = await _userManager.FindByIdAsync(userId);
+
+        var userRoles = await _userManager.GetRolesAsync(user);
+        UserRole = userRoles?.FirstOrDefault();
+        AllRoles = _roleManager.Roles.ToList();
+
+        profileModel.FirstName = user.FirstName;
+        profileModel.SecondName = user.SecondName;
+        profileModel.PhoneNumber = user.PhoneNumber;
+    }
+
+    protected async Task OnEditAsync(EditContext context)
+    {
+        CurrentEditContext = context;
+        _messageStore = new ValidationMessageStore(CurrentEditContext);
+        CurrentEditContext.OnValidationRequested += (s, e) => _messageStore.Clear();
+        CurrentEditContext.OnFieldChanged += (s, e) => _messageStore.Clear(e.FieldIdentifier);
+
+        if (user != null)
+        {
+            var userRoles = await _userManager.GetRolesAsync(user);
+            var userRole = userRoles?.FirstOrDefault();
+
+            var myProvider = AuthenticationStateProvider as CustomAuthenticationStateProvider;
+            var authState = await myProvider.GetAuthenticationStateAsync();
+
+            if (authState.User.Identity.Name != adminName && (UserRole == "admin" || userRole == "admin"))
+            {
+                Toaster.Add("Only superadmin can remove or add admin", MatToastType.Danger, "Error", "code");
+                _navigationManager.NavigateTo("/Identity/Account/Admin/UserIndex");
+            }
+
+            if (user.UserName == adminName && userRole == "admin")
+            {
+                Toaster.Add("Cant't remove admin role from superadmin", MatToastType.Danger, "Error", "code");
+                _navigationManager.NavigateTo("/Identity/Account/Admin/UserIndex");
+            }
+
+
+            await _userManager.AddToRolesAsync(user, new List<string> { UserRole});
+            await _userManager.RemoveFromRolesAsync(user, userRoles);
+
+            if (user.UserName == authState.User.Identity.Name)
+            {
+                await _applicationDbContext.SaveChangesAsync();
+            }
+
+            user.FirstName = profileModel.FirstName;
+            user.SecondName = profileModel.SecondName;
+            user.PhoneNumber = profileModel.PhoneNumber;
+            user.Role = UserRole;
+
+            var result = await _userManager.UpdateAsync(user);
+
+            if (result.Succeeded)
+            {
+                Toaster.Add("Successfully changed", MatToastType.Success, "Success", "code");
+                _navigationManager.NavigateTo("/Identity/Account/Admin/UserIndex");
+            }
+            else
+            {
+                foreach (var err in result.Errors)
+                {
+                    _messageStore.Add(CurrentEditContext.Field(string.Empty), err.Description);
+                }
+                CurrentEditContext.NotifyValidationStateChanged();
+            }
+        }
+    }
+
+}

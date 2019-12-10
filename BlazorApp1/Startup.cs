@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using BlazorChatSample.Server.Hubs;
+using Blazored.SessionStorage;
 
 namespace BlazorApp1
 {
@@ -50,13 +51,25 @@ namespace BlazorApp1
 			services.Configure<EmailSettings>(Configuration.GetSection("EmailSettings"));
 			services.AddSingleton<IEmailSender, EmailSender>();
 			services.AddRazorPages();
+			//services.AddSession();
+			//services.AddMemoryCache();
+			services.AddBlazoredSessionStorage();
 			services.AddServerSideBlazor();
-			services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<IdentityUser>>();
+			services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
+			services.AddScoped<IdentityMiddleware>();
 			services.AddSingleton<WeatherForecastService>();
 
 			services.AddHttpContextAccessor();
 			services.AddScoped<HttpContextAccessor>();
-
+			services.AddMatToaster(config =>
+			{
+				config.Position = MatToastPosition.BottomRight;
+				config.PreventDuplicates = true;
+				config.NewestOnTop = true;
+				config.ShowCloseButton = true;
+				config.MaximumOpacity = 95;
+				config.VisibleStateDuration = 3000;
+			});
 			services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
 				.AddCookie();
 			services.AddAuthentication()
@@ -99,6 +112,7 @@ namespace BlazorApp1
 
 			app.UseAuthentication();
 			app.UseAuthorization();
+			app.UseMiddleware<IdentityMiddleware>();
 
 			app.UseEmbeddedBlazorContent(typeof(BaseMatComponent).Assembly);
 

@@ -23,8 +23,10 @@ namespace BlazorApp1.Data
     public class EmailSender : IEmailSender
     {
         private readonly EmailSettings _emailSettings;
+        [Obsolete]
         private readonly IHostingEnvironment _env;
 
+        [Obsolete]
         public EmailSender(
             IOptions<EmailSettings> emailSettings,
             IHostingEnvironment env)

@@ -1,0 +1,97 @@
+﻿@page "/Identity/Account/Email"
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject SignInManager<User> _signInManager
+@inject UserManager<User> _userManager
+@inject NavigationManager  _navigationManager
+@inject IMatToaster Toaster
+@inject IEmailSender  _emailSender
+
+<h3>Email</h3>
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="email"></label>
+            @if (IsEmailConfirmed)
+            {
+                <div class="input-group">
+                    <input for="email" class="form-control" disabled />
+                    <div class="input-group-append">
+                        <span class="input-group-text text-success font-weight-bold">✓</span>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <input for="email" class="form-control" disabled />
+                <button id="email-verification" @onclick="() => SendVerificationEmailAsync()" class="btn btn-link">Send verification email</button>
+            }
+        </div>
+        <EditForm Model="@emailModel" OnValidSubmit="@OnConfirmEmailAsync">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+            <div class="form-group">
+                <label for="email">Email</label>
+                <InputText id="email" @bind-Value="emailModel.Email" class="form-control" />
+            </div>
+            <button id="change-email-button" type="submit" class="btn btn-primary">Change email</button>
+        </EditForm>
+    </div>
+</div>
+@code {
+    private EmailModel emailModel = new EmailModel();
+    public bool IsEmailConfirmed { get; set; }
+    private User user = null;
+    protected override async Task OnInitializedAsync()
+    {
+        var myProvider = AuthenticationStateProvider as CustomAuthenticationStateProvider;
+        var authState = await myProvider.GetAuthenticationStateAsync();
+        user = await _userManager.FindByNameAsync(authState.User.Identity.Name);
+        emailModel.Email = await _userManager.GetEmailAsync(user);
+        IsEmailConfirmed = await _userManager.IsEmailConfirmedAsync(user);
+    }
+
+    public async Task OnConfirmEmailAsync()
+    {
+        var email = await _userManager.GetEmailAsync(user);
+
+        if (emailModel.Email!= email)
+            try {
+                var userId = await _userManager.GetUserIdAsync(user);
+                var code = await _userManager.GenerateChangeEmailTokenAsync(user, emailModel.Email);
+                code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+                var query = new Dictionary<string, string> { { "userId", $"{user.Id}" },
+                                                        {"code", $"{code}"},
+                                                        { "email", $"{emailModel.Email}"} };
+                var callbackUrl = QueryHelpers.AddQueryString($"{_navigationManager.Uri}/ConfirmEmailChange", query);
+                await _emailSender.SendEmailAsync(
+                    emailModel.Email,
+                    "Confirm your email change",
+                    $"Please confirm your email change by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                Toaster.Add("Verification email sent. Please check your email", MatToastType.Info, "Info", "code");
+                return;
+            }
+            catch (Exception e)
+            { 
+                Toaster.Add("There is no user with such email", MatToastType.Warning, "Warning", "code");
+            }
+        else
+            Toaster.Add("Your email is unchanged", MatToastType.Warning, "Warning", "code");
+    }
+
+    public async Task SendVerificationEmailAsync()
+    {
+        if (user == null)
+        {
+            Toaster.Add("There is no user with such email", MatToastType.Warning, "Warning", "code");
+            return;
+        }
+
+        var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+        code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+        var callbackUrl = $"{_navigationManager.Uri}/ConfirmEmail?userId={user.Id}&code={code}";
+
+        await _emailSender.SendEmailAsync(user.Email, "Confirm your email",
+            $"You've registred on BlazorApp1 site. And now please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+        Toaster.Add("Verification email sent. Please check your email", MatToastType.Success, "Success", "code");
+    }
+}

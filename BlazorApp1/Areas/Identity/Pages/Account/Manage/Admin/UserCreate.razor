@@ -1,0 +1,38 @@
+﻿@page  "/Identity/Account/Admin/UserCreate"
+@attribute [Authorize(Roles = "admin")]
+@inject UserManager<User> _userManager
+@inject NavigationManager  _navigationManager
+@inject IMatToaster Toaster
+
+<h3>UserCreate</h3>
+<EditForm Model="@loginModel" OnValidSubmit="@OnAddAsync">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <div class="form-group">
+        <label for="email">Email</label>
+        <InputText id="email" @bind-Value="loginModel.Email" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label for="password">Password</label>
+        <InputText type=password id="password" @bind-Value="loginModel.Password" class="form-control" />
+    </div>
+    <p>
+        <button type="submit" class="btn btn-primary">Add</button>
+    </p>
+</EditForm>
+@code {
+    LoginModel loginModel = new LoginModel();
+    protected async Task OnAddAsync()
+    {
+        User user = new User { Email = loginModel.Email, UserName = loginModel.Email, EmailConfirmed = true };
+        var result = await _userManager.CreateAsync(user, loginModel.Password);
+        if (result.Succeeded)
+        {
+            _navigationManager.NavigateTo("/Identity/Account/Admin/UserIndex");
+        }
+        else
+        {
+            Toaster.Add("User with such email already exists", MatToastType.Danger, "Error", "code");
+        }
+    }
+}

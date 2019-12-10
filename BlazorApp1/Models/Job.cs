@@ -13,12 +13,14 @@ namespace BlazorApp1.Models
 		public string Description { get; set; }
 		public int Status { get; set; }
 		public TimeSpan EstimatedTime { get; set; }
-		public int HourlyRate { get; set; }
+
+		[Column(TypeName = "decimal(10,2)")]
+		public Decimal HourlyRate { get; set; }
 
 		[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
 		[Key]
-		public Guid JobId { get; set; } = Guid.NewGuid();
-		public Guid ClientId { get; set; }
-		public Guid FreelancerId { get; set; }
+		public string JobId { get; set; } = Guid.NewGuid().ToString();
+		public string ClientId { get; set; }
+		public string FreelancerId { get; set; }
 	}
 }

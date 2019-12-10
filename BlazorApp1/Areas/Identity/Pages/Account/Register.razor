@@ -1,0 +1,89 @@
+﻿@page "/Identity/Account/Register"
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject SignInManager<User> _signInManager
+@inject UserManager<User> _userManager
+@inject NavigationManager  _navigationManager
+@inject ApplicationDbContext _applicationDbContext
+@inject IEmailSender  _emailSender
+@inject IMatToaster Toaster
+
+<h1>Register</h1>
+<div class="row">
+    <div class="col-md-4">
+        <section>
+            <EditForm Model="@registerModel" OnValidSubmit="@OnRegisterAsync">
+                <h4>Create a new account.</h4>
+                <hr />
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <InputText id="email" @bind-Value="registerModel.Email" class="form-control" />
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <InputText type=password id="password" @bind-Value="registerModel.Password" class="form-control" />
+                </div>
+                <div class="form-group">
+                    <label for="confirmPassword">ConfirmPassword</label>
+                    <InputText type=password id="confirmPassword" @bind-Value="registerModel.ConfirmPassword" class="form-control" />
+                </div>
+                <button type="submit" class="btn btn-primary">Register</button>
+            </EditForm>
+        </section>
+    </div>
+    <ExternalLoginComponent Form="register" ExternalLogins="@ExternalLogins" />
+</div>
+
+    @code
+{
+        private RegisterModel registerModel = new RegisterModel();
+        IList<AuthenticationScheme> ExternalLogins { get; set; }
+        private ValidationMessageStore _messageStore;
+        [CascadingParameter] EditContext CurrentEditContext { get; set; }
+        protected override async Task OnInitializedAsync()
+        {
+            if (QueryHelpers.ParseQuery(_navigationManager.ToAbsoluteUri(_navigationManager.Uri).Query).
+                                                        TryGetValue("provider", out var param))
+            {
+                _navigationManager.NavigateTo("/Identity/Account/ExternalLogin");
+            }
+            ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+        }
+        protected async Task OnRegisterAsync(EditContext context)
+        {
+            CurrentEditContext = context;
+            _messageStore = new ValidationMessageStore(CurrentEditContext);
+            CurrentEditContext.OnValidationRequested += (s, e) => _messageStore.Clear();
+            CurrentEditContext.OnFieldChanged += (s, e) => _messageStore.Clear(e.FieldIdentifier);
+
+            var user = new User { UserName = registerModel.Email, Email = registerModel.Email, EmailConfirmed = true };
+            var result = await _userManager.CreateAsync(user, registerModel.Password);
+            if (result.Succeeded)
+            {
+                var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+                var callbackUrl = $"{_navigationManager.Uri}/ConfirmEmail?userId={user.Id}&code={code}";
+
+                try
+                {
+                    await _emailSender.SendEmailAsync(registerModel.Email, "Confirm your email",
+                     $"You've registred on BlazorApp1 site. And now please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                    var myProvider = AuthenticationStateProvider as CustomAuthenticationStateProvider;
+                    await myProvider.MarkAsAuthentificated(registerModel.Email, _userManager);
+                    // await _signInManager.SignInAsync(user, isPersistent: false);
+                    Toaster.Add($"Login as {registerModel.Email}", MatToastType.Success, "Success", "code");
+                    _navigationManager.NavigateTo("/");
+                }
+                catch (Exception exception)
+                {
+                    _messageStore.Add(CurrentEditContext.Field(string.Empty), exception.Message);
+                }
+            }
+            foreach (var err in result.Errors)
+            {
+                _messageStore.Add(CurrentEditContext.Field(string.Empty), err.Description);
+            }
+            CurrentEditContext.NotifyValidationStateChanged();
+        }
+    }

@@ -29,7 +29,7 @@ namespace BlazorApp1.Data
 
             if (await userManager.FindByNameAsync(adminEmail) == null)
             {
-                User admin = new User { Email = adminEmail, UserName = adminEmail, EmailConfirmed = true };
+                User admin = new User { Email = adminEmail, UserName = adminEmail, EmailConfirmed = true, Role = "admin" };
                 IdentityResult result = await userManager.CreateAsync(admin, password);
                 if (result.Succeeded)
                 {

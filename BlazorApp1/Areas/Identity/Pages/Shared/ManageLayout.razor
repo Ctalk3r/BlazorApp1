@@ -1,0 +1,42 @@
+﻿@layout BlazorApp1.Pages.Shared.Layout
+@using BlazorApp1.Models
+@using Microsoft.AspNetCore.Identity
+@inherits LayoutComponentBase
+@inject SignInManager<User> SignInManager
+
+<div>
+    <h1>Manage your account</h1>
+
+    <h4>Change your account settings</h4>
+    <hr />
+    <div class="row">
+        <div class="col-md-3">
+            <ul class="nav nav-pills flex-column">
+                <NavLink id="profile" href="/Identity/Account/Profile">Profile</NavLink>
+                <NavLink id="email" href="/Identity/Account/Email">Email</NavLink>
+                <NavLink id="change-password" href="/Identity/Account/ChangePassword">Password</NavLink>
+                @if (hasExternalLogins)
+                {
+                    <NavLink id="external-login" href="/Identity/Account/ExternalLogins">External logins</NavLink>
+                }
+                <AuthorizeView Roles="admin">
+                    <Authorized>
+                        <NavLink id="users" href="/Identity/Account/Admin/UserIndex">Users</NavLink>
+                    </Authorized>
+                </AuthorizeView>
+            </ul>
+        </div>
+        <div class="col-md-9">
+            @Body
+        </div>
+    </div>
+</div>
+
+@code
+{    
+    bool hasExternalLogins = false;
+    protected override async Task OnInitializedAsync()
+    {
+        hasExternalLogins = (await SignInManager.GetExternalAuthenticationSchemesAsync()).Any();
+    }
+}

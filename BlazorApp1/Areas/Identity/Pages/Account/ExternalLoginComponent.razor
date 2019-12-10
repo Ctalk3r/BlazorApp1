@@ -1,0 +1,67 @@
+﻿@inject NavigationManager _navigationManager
+
+@using Microsoft.AspNetCore.Authentication
+@using System.Threading
+@using Microsoft.AspNetCore.Http
+@inject NavigationManager _navigationManager
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject SignInManager<User> _signInManager
+@inject UserManager<User> _userManager
+@inject IHttpContextAccessor _httpContextAccessor
+
+<div class="col-md-6 col-md-offset-2">
+    <section>
+        <h4>Use another service to @Form.</h4>
+        <hr />
+        @{
+            if ((@ExternalLogins?.Count ?? 0) == 0)
+            {
+                <div>
+                    <p>
+                        There are no external authentication services configured. See <a href="https://go.microsoft.com/fwlink/?LinkID=532715">this article</a>
+                        for details on setting up this ASP.NET application to support logging in via external services.
+                    </p>
+                </div>
+            }
+            else
+            {
+                <form id="external-account" class="form-horizontal">
+                    <div>
+                        <p>
+                            @foreach (var provider in @ExternalLogins)
+                            {
+                                <button @onclick="@(() => OnExternalLoginAsync(provider.Name))" class="btn btn-primary" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">@provider.DisplayName</button>
+                            }
+                        </p>
+                    </div>
+                </form>
+            }
+        }
+    </section>
+</div>
+
+@code
+{
+    [Parameter]
+    public string Form { get; set; }
+    [Parameter]
+    public IList<AuthenticationScheme> ExternalLogins { get; set; }
+
+
+    protected void OnExternalLoginAsync(string provider)
+    {
+        var currentUri = _navigationManager.ToBaseRelativePath(_navigationManager.Uri);
+
+        var properties = _signInManager.ConfigureExternalAuthenticationProperties(provider,
+                                                        "/Identity/Account/ExternalLogin");
+
+        var myProvider = AuthenticationStateProvider as CustomAuthenticationStateProvider;
+        CustomAuthenticationStateProvider.IsAuthentificating = true;
+        CustomAuthenticationStateProvider.Provider = provider;
+        CustomAuthenticationStateProvider.Properties = properties;
+
+        //var query = new Dictionary<string, string> { { "provider", $"{provider}" },
+        //                                            {"redirectUri", $"/Identity/Account/ExternalLogin"} };
+        //_navigationManager.NavigateTo(QueryHelpers.AddQueryString("/Identity/Account/ExternalLogin", query));
+    }
+}

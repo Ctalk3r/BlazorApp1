@@ -1,0 +1,100 @@
+﻿@page "/Identity/Account/Login"
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject SignInManager<User> _signInManager
+@inject UserManager<User> _userManager
+@inject NavigationManager  _navigationManager
+@inject ApplicationDbContext _applicationDbContext
+@inject IMatToaster Toaster
+@inject IEmailSender  _emailSender
+
+<h1>Login</h1>
+<div class="row">
+    <div class="col-md-4">
+        <section>
+            <EditForm Model="@loginModel" OnValidSubmit="@OnLoginAsync">
+                <h4>Use a local account to log in.</h4>
+                <hr />
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <InputText id="email" @bind-Value="loginModel.Email" class="form-control" />
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <InputText type=password id="password" @bind-Value="loginModel.Password" class="form-control" />
+                </div>
+
+                <InputCheckbox id="remember" @bind-Value="loginModel.RememberMe" />
+                <label for="remember">Remember me?</label>
+                <p>
+                    <button type="submit" class="btn btn-primary">Login</button>
+                </p>
+            </EditForm>
+
+            <div class="form-group">
+                <p>
+                    <NavLink id="forgot-password" href="./ForgotPassword">Forgot your password?</NavLink>
+                </p>
+                <p>
+                    <NavLink href="@{_navigationManager.BaseUri + "/Identity/Account/Register"}">Register as a new user</NavLink>
+                </p>
+                <p>
+                    <button @onclick="SendVerificationEmailAsync" class="btn-link" style="padding:0px;margin:0px;border:0px">Resend email confirmation</button>
+                </p>
+            </div>
+        </section>
+    </div>
+    <ExternalLoginComponent Form="login" ExternalLogins="@ExternalLogins" />
+</div>
+
+@code
+    {
+    private LoginModel loginModel = new LoginModel();
+    IList<AuthenticationScheme> ExternalLogins { get; set; }
+    protected override async Task OnInitializedAsync()
+    {
+        if (QueryHelpers.ParseQuery(_navigationManager.ToAbsoluteUri(_navigationManager.Uri).Query).
+                                                    TryGetValue("provider", out var param))
+        {
+            _navigationManager.NavigateTo("/Identity/Account/ExternalLogin");
+        }
+        ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+    }
+    protected async Task OnLoginAsync()
+    {
+        var myProvider = AuthenticationStateProvider as CustomAuthenticationStateProvider;
+        var authState = await myProvider.GetAuthenticationStateAsync();
+        if (!authState.User.Identity.IsAuthenticated)
+        {
+            if (await myProvider.CanSignIn(loginModel.Email, loginModel.Password, _userManager))
+            {
+                await myProvider.MarkAsAuthentificated(loginModel.Email, _userManager);
+                Toaster.Add($"Login as {loginModel.Email}", MatToastType.Success, "Success", "code");
+
+                _navigationManager.NavigateTo("/");
+            }
+            else
+                Toaster.Add("Wrong username or password", MatToastType.Danger, "Failure", "code");
+        }
+    }
+
+    public async Task SendVerificationEmailAsync()
+    {
+        var user = await _userManager.FindByEmailAsync(loginModel.Email ?? "");
+        if (user == null)
+        {
+            Toaster.Add("There is no user with such email", MatToastType.Warning, "Warning", "code");
+            return;
+        }
+
+        var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+        code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+        var callbackUrl = $"{_navigationManager.Uri}/ConfirmEmail?userId={user.Id}&code={code}";
+
+        await _emailSender.SendEmailAsync(loginModel.Email, "Confirm your email",
+            $"You've registred on BlazorApp1 site. And now please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+        Toaster.Add("Verification email sent. Please check your email", MatToastType.Success, "Success", "code");
+    }
+}
+
