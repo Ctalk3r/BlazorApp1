@@ -17,6 +17,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using BlazorChatSample.Server.Hubs;
 using Blazored.SessionStorage;
+using System.Net.Http;
 
 namespace BlazorApp1
 {
@@ -61,6 +62,8 @@ namespace BlazorApp1
 
 			services.AddHttpContextAccessor();
 			services.AddScoped<HttpContextAccessor>();
+			services.AddHttpClient();
+			services.AddScoped<HttpClient>();
 			services.AddMatToaster(config =>
 			{
 				config.Position = MatToastPosition.BottomRight;

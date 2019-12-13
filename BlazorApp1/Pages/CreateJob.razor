@@ -1,0 +1,37 @@
+﻿@page "/Pages/CreateJob"
+@attribute [Authorize(Roles = "admin, client")]
+
+@using BlazorApp1.Data;
+@using BlazorApp1.Models;
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject ApplicationDbContext _applicationDbContext
+@inject Microsoft.AspNetCore.Identity.UserManager<User> _userManager
+@inject NavigationManager _navigationManager
+
+<AuthorizeView Roles="admin, client">
+    <h3>CreateJob</h3>
+
+    <p>
+        <MatTextField @bind-Value="@Title" FullWidth="true" Label="Standard" Outlined="true"></MatTextField>
+    </p>
+    <p>
+        <MatTextField @bind-Value="@Description" Label="Standard" Outlined="true" TextArea="true"></MatTextField>
+    </p>
+    <MatButton Unelevated="true" @onclick="@(_ => SaveJobAsync())">Post</MatButton>
+</AuthorizeView>
+@code {
+    string Title { get; set; }
+    string Description { get; set; }
+
+    protected async Task SaveJobAsync()
+    {
+        var myProvider = AuthenticationStateProvider as CustomAuthenticationStateProvider;
+        var authState = await myProvider.GetAuthenticationStateAsync();
+        User user = await _userManager.FindByNameAsync(authState.User.Identity.Name);
+
+        Job newJob = new Job { Title = this.Title, Description = this.Description, ClientId = user.Id };
+        _applicationDbContext.Add<Job>(newJob);
+        await _applicationDbContext.SaveChangesAsync();
+        _navigationManager.NavigateTo("/");
+    }
+}

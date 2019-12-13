@@ -18,6 +18,9 @@ namespace BlazorApp1.Models
 		public Decimal HourlyRate { get; set; }
 
 		[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+		public DateTime CreationDate { get; set; } = DateTime.Now;
+
+		[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
 		[Key]
 		public string JobId { get; set; } = Guid.NewGuid().ToString();
 		public string ClientId { get; set; }

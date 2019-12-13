@@ -79,7 +79,8 @@ else
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
+    {    
+        base.OnAfterRender(firstRender);
         if (IsSuccesseded == true)
         {
             IsSuccesseded = false;
@@ -94,7 +95,6 @@ else
             hasLoaded = true;
             StateHasChanged();
         }
-        base.OnAfterRender(firstRender);
     }
 
     protected async Task OnConfirmAsync(EditContext context = null)

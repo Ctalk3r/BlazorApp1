@@ -60,7 +60,7 @@
     private async Task InternalDelete(User user, CancellationToken token)
     {
 
-        for (int i = 0; i < 100; i++)
+        for (int i = 0; i < 25; i++)
         {
             if (token.IsCancellationRequested)
             {
@@ -69,8 +69,14 @@
             Thread.Sleep(100);
         }
 
+        snackBarIsOpen = false;
         UsersList.Remove(user);
         await _userManager.DeleteAsync(user);
+        await InvokeAsync(() =>
+            {
+
+                StateHasChanged();
+            });
     }
 
     protected void Undo()
