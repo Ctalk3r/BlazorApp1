@@ -14,5 +14,7 @@ namespace BlazorApp1.Areas.Identity.Pages.Account.Models
 		[Phone]
 		[Display(Name = "Phone number")]
 		public string PhoneNumber { get; set; }
+		public string Country { get; set; }
+		public string City { get; set; }
 	}
 }

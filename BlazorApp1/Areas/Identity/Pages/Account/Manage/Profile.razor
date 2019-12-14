@@ -20,7 +20,15 @@
             </div>
             <div class="form-group">
                 <label for="phoneNumber">PhoneNumber</label>
-                <InputText type=password id="phoneNumber" @bind-Value="profileModel.PhoneNumber" class="form-control" />
+                <InputText id="phoneNumber" @bind-Value="profileModel.PhoneNumber" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label for="country">Country</label>
+                <InputText id="country" @bind-Value="profileModel.Country" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label for="city">City</label>
+                <InputText id="city" @bind-Value="profileModel.City" class="form-control" />
             </div>
             <button id="update-profile-button" type="submit" class="btn btn-primary">Save</button>
         </EditForm>
@@ -29,16 +37,36 @@
 
 @code
     {
-    ProfileModel profileModel = new ProfileModel();
+        ProfileModel profileModel = new ProfileModel();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var myProvider = AuthenticationStateProvider as CustomAuthenticationStateProvider;
+        var authState = await myProvider.GetAuthenticationStateAsync();
+        var user = await _userManager.FindByEmailAsync(authState.User.Claims.First(x => x.Type == ClaimTypes.Email).Value);
+
+        if (user != null)
+        {
+            profileModel.FirstName = user.FirstName;
+            profileModel.SecondName = user.SecondName;
+            profileModel.PhoneNumber = user.PhoneNumber;
+            profileModel.Country = user.Country;
+            profileModel.City = user.City;
+        }
+    }
+
     protected async Task OnSaveProfileAsync()
     {
         var myProvider = AuthenticationStateProvider as CustomAuthenticationStateProvider;
         var authState = await myProvider.GetAuthenticationStateAsync();
-        var user = await _userManager.FindByEmailAsync(authState.User.Identity.Name);
+        var user = await _userManager.FindByEmailAsync(authState.User.Claims.First(x => x.Type == ClaimTypes.Email).Value);
 
         user.FirstName = profileModel.FirstName;
         user.SecondName = profileModel.SecondName;
         user.PhoneNumber = profileModel.PhoneNumber;
+        user.City = profileModel.City;
+        user.Country = profileModel.Country;
+
 
         var result = await _userManager.UpdateAsync(user);
 

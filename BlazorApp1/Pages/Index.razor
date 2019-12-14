@@ -47,20 +47,30 @@
         {
             <h1>Current Feed</h1>
             <MatThemeProvider Theme="@theme2">
-                <MatTable SortByParamName="CreationTime" Descending="false" Items="@Jobs" class="mat-elevation-z5" SearchTermFieldPlaceHolder="" FilterByColumnName="Title" AllowSelection="true">
+                <MatTable SortByParamName="Price" Descending="true" Items="@Jobs" class="mat-elevation-z5" SearchTermFieldPlaceHolder="" FilterByColumnName="Title" AllowSelection="true">
                     <MatTableHeader>
-                        <th style="width:200px">Title</th>
                         <th>Price</th>
-                        <th>Desrciption</th>
+                        <th>Skills</th>
+                        <th>Description</th>
                     </MatTableHeader>
                     <MatTableRow Context="job">
-                        <td>@job.Title</td>
-                        <td>@String.Format("${0:f2}", job.HourlyRate)</td>
+                        <td>@String.Format("${0:f2}", job.Price)</td>
                         <td>
-                            <MatButton Style="background-color:transparent;height:auto;text-align:left"
-                                       @onclick="@(() => OnSelectJob(job.JobId))">@job.Description</MatButton>
-                                </td>
-                            </MatTableRow>
+                            @if (job.Skills != null)
+                            foreach (var skill in job.Skills.Split(','))
+                            {
+                                <MatChip Style="background-color:lightblue;" Label="@skill"></MatChip>
+                            }
+                        </td>
+                        <td>
+                            <a @onclick="@(() => OnSelectJob(job.JobId))">
+                                <h6 class="mat-h6">@job.Title</h6>
+                                <div class="mat-body2" style="color:Highlight">
+                                    @job.Description
+                                </div>
+                            </a>
+                        </td>
+                    </MatTableRow>
                         </MatTable>
                     </MatThemeProvider>
                     <MatDialog @bind-IsOpen="@dialogIsOpen">
@@ -83,7 +93,7 @@
                             </tr>
                             <tr>
                                 <td><MatSubtitle1>Locality:  </MatSubtitle1></td>
-                                <td>@(SelectedJobClient?.Country ?? "unknown"), @SelectedJobClient?.City</td>
+                                <td><MatIcon>location_on</MatIcon>@(SelectedJobClient?.Country ?? "unknown"), @SelectedJobClient?.City</td>
                             </tr>
                             <tr>
                                 <td><MatSubtitle1>Successfull jobs:  </MatSubtitle1></td>

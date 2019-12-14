@@ -8,6 +8,12 @@
   <ItemGroup>
     <Compile Remove="Migrations\20191127154037_Initial.cs" />
     <Compile Remove="Migrations\20191127154037_Initial.Designer.cs" />
+    <Compile Remove="Migrations\20191214113222_Ешьу.cs" />
+    <Compile Remove="Migrations\20191214113222_Ешьу.Designer.cs" />
+    <Compile Remove="Migrations\20191214113400_Time.cs" />
+    <Compile Remove="Migrations\20191214113400_Time.Designer.cs" />
+    <Compile Remove="Migrations\20191214114119_TimeSpan.cs" />
+    <Compile Remove="Migrations\20191214114119_TimeSpan.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

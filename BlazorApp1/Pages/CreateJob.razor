@@ -7,31 +7,89 @@
 @inject ApplicationDbContext _applicationDbContext
 @inject Microsoft.AspNetCore.Identity.UserManager<User> _userManager
 @inject NavigationManager _navigationManager
+@inject IMatToaster Toaster
 
-<AuthorizeView Roles="admin, client">
-    <h3>CreateJob</h3>
-
-    <p>
-        <MatTextField @bind-Value="@Title" FullWidth="true" Label="Standard" Outlined="true"></MatTextField>
-    </p>
-    <p>
-        <MatTextField @bind-Value="@Description" Label="Standard" Outlined="true" TextArea="true"></MatTextField>
-    </p>
-    <MatButton Unelevated="true" @onclick="@(_ => SaveJobAsync())">Post</MatButton>
-</AuthorizeView>
+    <AuthorizeView Context="anotherContext" Roles="admin, client">
+        <h3>CreateJob</h3>
+        <EditForm Model="jobModel" OnValidSubmit="SaveJobAsync">
+            <DataAnnotationsValidator />
+            <p>
+                <MatTextField Style="width:600px" @bind-Value="jobModel.Title" Label="Title" Outlined="true"></MatTextField>
+                <ValidationMessage For="@(() => jobModel.Title)" />
+            </p>
+            <tr>
+                <td>
+                    <p>
+                        <MatTextField Style="height:280px;width:650px" @bind-Value="jobModel.Description" Label="Description" Outlined="true" TextArea="true"></MatTextField>
+                        <ValidationMessage For="@(() => jobModel.Description)" />
+                    </p>
+                </td>
+                <td>
+                    <p>
+                        <MatDatePicker Style="left:30px" Label="Term" @bind-Value="jobModel.Term" />
+                        <ValidationMessage For="@(() => jobModel.Term)" />
+                    </p>
+                    <p>
+                        <MatTextField Style="left:30px" @bind-Value="jobModel.Price" Label="Price" Icon="attach_money"></MatTextField>
+                        <ValidationMessage For="@(() => jobModel.Price)" />
+                    </p>
+                </td>
+            </tr>
+            <p>
+                <MatAccordion>
+                    <MatExpansionPanel>
+                        <MatExpansionPanelSummary>
+                            <MatExpansionPanelHeader><MatH6>Set necessary job skills</MatH6></MatExpansionPanelHeader>
+                        </MatExpansionPanelSummary>
+                        <MatExpansionPanelDetails>
+                            @foreach (var skill in SkillsDict)
+                            {
+                                <div>
+                                    <MatCheckbox @bind-Checked="@SkillsDict[skill.Key]" Label="@skill.Key"></MatCheckbox>
+                                </div>
+                            }
+                        </MatExpansionPanelDetails>
+                    </MatExpansionPanel>
+                </MatAccordion>
+            </p>
+            <p>
+                <MatButton Unelevated="true" Type="submit">Post</MatButton>
+            </p>
+        </EditForm>
+    </AuthorizeView>
 @code {
-    string Title { get; set; }
-    string Description { get; set; }
-
+    Dictionary<string, bool> SkillsDict = new Dictionary<string, bool>()
+    {
+        { "C", false }, 
+        { "C++", false }, 
+        { "C#", false }, 
+        { "Java", false }, 
+        { "Python", false }, 
+        { "Ruby", false }, 
+        { "Xamarin", false }, 
+        { "Asp Net", false }, 
+        { "Android", false }, 
+        { "IOS", false }, 
+        { "AaDS", false }
+    };
+    JobModel jobModel = new JobModel();
+    bool s = false;
     protected async Task SaveJobAsync()
     {
         var myProvider = AuthenticationStateProvider as CustomAuthenticationStateProvider;
         var authState = await myProvider.GetAuthenticationStateAsync();
         User user = await _userManager.FindByNameAsync(authState.User.Identity.Name);
+                
+        Job newJob = new Job { Title = jobModel.Title, Description = jobModel.Description,
+            Price = Decimal.Parse(jobModel.Price), EstimatedTime = (DateTime)jobModel.Term - DateTime.Now,
+            ClientId = user.Id };
+        foreach (var skill in SkillsDict)
+            if (skill.Value == true)
+                newJob.AppendSkill(skill.Key);
 
-        Job newJob = new Job { Title = this.Title, Description = this.Description, ClientId = user.Id };
         _applicationDbContext.Add<Job>(newJob);
         await _applicationDbContext.SaveChangesAsync();
+        Toaster.Add("Job successfully added", MatToastType.Success, "Success", "code");
         _navigationManager.NavigateTo("/");
     }
 }

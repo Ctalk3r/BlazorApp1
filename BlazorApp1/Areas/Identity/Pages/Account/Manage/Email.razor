@@ -45,7 +45,7 @@
     {
         var myProvider = AuthenticationStateProvider as CustomAuthenticationStateProvider;
         var authState = await myProvider.GetAuthenticationStateAsync();
-        user = await _userManager.FindByNameAsync(authState.User.Identity.Name);
+        var user = await _userManager.FindByEmailAsync(authState.User.Claims.First(x => x.Type == ClaimTypes.Email).Value);
         emailModel.Email = await _userManager.GetEmailAsync(user);
         IsEmailConfirmed = await _userManager.IsEmailConfirmedAsync(user);
     }
