@@ -50,7 +50,7 @@ namespace BlazorApp1
 				.AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 			services.AddSingleton<IUserIdProvider, CustomUserIdProvider>();
-
+			services.AddSingleton<ChatService>();
 			services.Configure<EmailSettings>(Configuration.GetSection("EmailSettings"));
 			services.AddSingleton<IEmailSender, EmailSender>();
 			services.AddRazorPages();

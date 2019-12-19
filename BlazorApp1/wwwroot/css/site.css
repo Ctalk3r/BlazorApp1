@@ -218,6 +218,7 @@ body {
     margin: 0;
     height: 347px;
     overflow: scroll;
+    overflow-x: hidden;
 }
 
     .messages .message {

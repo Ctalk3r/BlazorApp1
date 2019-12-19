@@ -162,7 +162,7 @@
 
     protected override void OnInitialized()
     {
-        Jobs = db.Jobs.ToList();
+        Jobs = db.Jobs.OrderByDescending(job => job.CreationDate).ToList();
     }
 
     protected void PostJob()

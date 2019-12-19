@@ -1,60 +1,67 @@
 ﻿@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject ChatService _chatService
+@using System.Security.Claims;
+
 @implements IDisposable
+@*<div class="content px-4">
 
-<div class="content px-4">
+        <h1>Blazor SignalR Chat Sample</h1>
 
-    <h1>Blazor SignalR Chat Sample</h1>
+        <div id="scrollbox">
 
-    <div id="scrollbox">
+            @foreach (var item in Messages)
+            {
+                <div class="@item.Side">
+                    <div class="user">@item.Username</div>
+                    <div class="msg">@item.Body</div>
+                </div>
+            }
+            <hr />
+            <textarea class="input-lg" placeholder="enter your comment" @bind="@newMessage"></textarea>
+            <button class="btn btn-primary" @onclick="@NotifyAll">Send</button>
+        </div>
 
-        @foreach (var item in Messages)
-        {
-            <div class="@item.Side">
-                <div class="user">@item.Username</div>
-                <div class="msg">@item.Body</div>
-            </div>
-        }
-        <hr />
-        <textarea class="input-lg" placeholder="enter your comment" @bind="@newMessage"></textarea>
-        <button class="btn btn-primary" @onclick="@NotifyAll">Send</button>
-    </div>
-
-</div>
+    </div>*@
 
 @code {
-    string newMessage = null;
-    string userName = null;
+    //string newMessage = null;
+    string userId = null;
+    //[Parameter]
+    //public List<Message> Messages { get; set; }
     [Parameter]
-    public List<Message> Messages { get; set; }
-    [Parameter] public EventCallback<Tuple<string, string>> OnClick { get; set; } = default;
-    static List<EventCallback<Tuple<string, string>>> eventCallbacks = new List<EventCallback<Tuple<string, string>>>();
+    public EventCallback<Tuple<string, string>> OnClick { get; set; }
+    //static List<EventCallback<Tuple<string, string>>> eventCallbacks = new List<EventCallback<Tuple<string, string>>>();
 
     protected async override Task OnInitializedAsync()
     {
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
         var user = authState.User;
-        userName = user.Identity.Name;
-        if (OnClick.Equals(default) == false && eventCallbacks.Find(x => x.Equals(OnClick)).Equals(default) == false)
-            eventCallbacks.Add(OnClick);
+        userId = user?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (userId != null)
+        {
+            _chatService.AddCallback(OnClick, userId);
+        }
+        //if (OnClick.Equals(default) == false && eventCallbacks.Find(x => x.Equals(OnClick)).Equals(default) == false)
+        //    eventCallbacks.Add(OnClick);
     }
 
     protected async Task NotifyAll()
     {
 
-        foreach (var callback in eventCallbacks)
-        {
-            await InvokeAsync(
-                async delegate()
-                {
-                    await callback.InvokeAsync(new Tuple<string, string>(newMessage, userName));
-                }        );
-            System.Threading.Thread.Sleep(1000);
-        }
+        //foreach (var callback in eventCallbacks)
+        //{
+        //    await InvokeAsync(
+        //        async delegate()
+        //        {
+        //            await callback.InvokeAsync(new Tuple<string, string>(newMessage, userName));
+        //        }        );
+        //    System.Threading.Thread.Sleep(1000);
+        //}
 
     }
 
     public void Dispose()
     {
-        eventCallbacks.Remove(OnClick);
+        // eventCallbacks.Remove(OnClick);
     }
 }

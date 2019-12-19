@@ -10,6 +10,9 @@ namespace BlazorApp1.Data
 	public class ApplicationDbContext : IdentityDbContext<User>
 	{
 		public DbSet<Job> Jobs { get; set; }
+		public DbSet<Message> Messages { get; set; }
+
+
 		public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
 			: base(options)
 		{

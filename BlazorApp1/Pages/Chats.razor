@@ -8,44 +8,47 @@
 @inject UserManager<User> _userManager
 @inject NavigationManager  _navigationManager
 @inject ApplicationDbContext  _applicationDbContext
+@inject ChatService _chatService
+@inject IJSRuntime JsRuntime
 
 
 <AuthorizeView>
     <Authorized>
+        <ChatComponent OnClick="NotifyUser"></ChatComponent>
         <div class="content px-4">
 
             @if (chatting)
             {
-            <div class="chat_window">
-                <div class="top_menu">
-                    <div class="buttons">
-                        <div class="button close"></div>
-                        <div class="button minimize"></div>
-                        <div class="button maximize"></div>
+                <div class="chat_window">
+                    <div class="top_menu">
+                        <div class="buttons">
+                            <div class="button close"></div>
+                            <div class="button minimize"></div>
+                            <div class="button maximize"></div>
+                        </div>
+                        <div class="title">Chat</div>
                     </div>
-                    <div class="title">Chat</div>
+                    <ul class="messages" id="1">
+                        @for (int i = 0; i < messages.Count; ++i)
+                        {
+                            <li class="message @(messages[messages.Count - i - 1].IsMine ? "right" : "left")">
+                                <div class="avatar"></div>
+                                <div class="text_wrapper">
+                                    <div class="text">@messages[messages.Count - i - 1].Body</div>
+                                </div>
+                            </li>
+                        }
+                    </ul>
+                    <div class="bottom_wrapper clearfix">
+                        <div class="message_input_wrapper">
+                            <input @bind-value="newMessage" class="message_input" placeholder="Type your message here..." />
+                        </div>
+                        <div class="send_message" @onclick=@Send>
+                            <div class="icon"></div>
+                            <div class="text">Send</div>
+                        </div>
+                    </div>
                 </div>
-                <ul class="messages">
-                    @foreach (var message in messages)
-                    { 
-                        <li class="message @(message.IsMine ? "right" : "left")">
-                            <div class="avatar"></div>
-                            <div class="text_wrapper">
-                                <div class="text">@message.Body</div>
-                            </div>
-                        </li>
-                    }
-                </ul>
-                <div class="bottom_wrapper clearfix">
-                    <div class="message_input_wrapper">
-                        <input @bind-value="newMessage" class="message_input" placeholder="Type your message here..." />
-                    </div>
-                    <div class="send_message" @onclick=@Send>
-                        <div class="icon"></div>
-                        <div class="text">Send</div>
-                    </div>
-                </div>
-            </div>
             }
             else
             {
@@ -87,11 +90,11 @@
         if (UserIds != null && userId != UserIds.Split('_')[1] && userId != UserIds.Split('_')[1])
             _navigationManager.NavigateTo("/");
         //Initialize SignalR
-        connection = new HubConnectionBuilder()
-    .WithUrl("https://localhost:44306/chathub")
-    .Build();
-        connection.On<string, string, string>("NotifyUser", NotifyUser);
-        await connection.StartAsync();
+        //    connection = new HubConnectionBuilder()
+        //.WithUrl("https://localhost:44306/chathub")
+        //.Build();
+        //    connection.On<string, string, string>("NotifyUser", NotifyUser);
+        //    await connection.StartAsync();
 
     }
 
@@ -103,34 +106,57 @@
             if (anotherUserId == userId)
                 anotherUserId = UserIds.Split('_')[1];
             chatting = true;
+            messages = _applicationDbContext.Messages
+                .Where((user) => (user.FirstUserId == anotherUserId || user.FirstUserId == userId) &&
+                                (user.SecondUserId == anotherUserId || user.SecondUserId == userId))
+                .OrderBy(el => el.CreationTime)
+                .Skip(Math.Max(0, _applicationDbContext.Messages.Count() - 50))
+                .ToList();
+            messages.ForEach((message) => message.IsMine = userId == message.FirstUserId);
             StateHasChanged();
         }
+    }
+    async Task NotifyUser(Tuple<string, string> response)
+    {
+        var username = response.Item1;
+        var message = response.Item2;
+        messages.Add(new Message(username, message, userName == username));
+        // await JsRuntime.InvokeVoidAsync("scrollDown");
     }
 
-    Task NotifyUser(string name, string message, string receiver)
-    {
-        if (receiver == userId)
-        {
-            messages.Add(new Message(name, message, true));
-            StateHasChanged();
-        } else if (receiver == anotherUserId)
-        {
-            messages.Add(new Message(name, message, false));
-            StateHasChanged();
-        }
-        return Task.CompletedTask;
-    }
+    //Task NotifyUser(string name, string message, string receiver = null)
+    //{
+    //    if (receiver == userId)
+    //    {
+    //        messages.Add(new Message(name, message, true));
+    //        StateHasChanged();
+    //    } else if (receiver == anotherUserId)
+    //    {
+    //        messages.Add(new Message(name, message, false));
+    //        StateHasChanged();
+    //    }
+    //    return Task.CompletedTask;
+    //}
 
     async Task Send()
     {
-        await connection.InvokeAsync("SendMessage", userName, newMessage, anotherUserId);
+        //await connection.InvokeAsync("SendMessage", userName, newMessage, anotherUserId);
+        _chatService.NotifyUser(anotherUserId, newMessage, userName);
+        _chatService.NotifyUser(userId, newMessage, userName);
+        _applicationDbContext.Messages.Add(new Message(userName, newMessage, false)
+        {
+            IsSecret = false,
+            FirstUserId = userId,
+            SecondUserId = anotherUserId
+        });
+        _applicationDbContext.SaveChanges();
         newMessage = "";
     }
 
     public void Dispose()
     {
         if (connection != null)
-        {            
+        {
             connection.StopAsync();
             connection.DisposeAsync();
         }
