@@ -59,8 +59,9 @@
     {
         var myProvider = AuthenticationStateProvider as CustomAuthenticationStateProvider;
         var authState = await myProvider.GetAuthenticationStateAsync();
-        var user = await _userManager.FindByEmailAsync(authState.User.Claims.First(x => x.Type == ClaimTypes.Email).Value);
-
+        var user = await _userManager.FindByEmailAsync(authState.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Email)?.Value);
+        if (user == null)
+            return;
         user.FirstName = profileModel.FirstName;
         user.SecondName = profileModel.SecondName;
         user.PhoneNumber = profileModel.PhoneNumber;

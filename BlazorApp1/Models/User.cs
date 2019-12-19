@@ -20,6 +20,7 @@ namespace BlazorApp1.Models
 		public string City { get; set; }
 		public string Role { get; set; }
 		public int SuccessfulJobsNumber { get; set; }
+		public string CurrentJobs { get; set; }
 
 		[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
 		public DateTime RegistrationDate { get; set; } = DateTime.Now;

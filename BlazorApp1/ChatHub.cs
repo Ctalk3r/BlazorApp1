@@ -16,9 +16,9 @@ namespace BlazorChatSample.Server.Hubs
             _logger = logger;
         }
 
-        public async Task SendMessage(string username, string message, string connectionId)
+        public async Task SendMessage(string username, string message, string receiver)
         {
-            await Clients.AllExcept(username).SendAsync("NotifyUser", username, message);
+            await Clients.All.SendAsync("NotifyUser", username, message, receiver);
             _logger.LogInformation($"{username} said {message}");
         }
 

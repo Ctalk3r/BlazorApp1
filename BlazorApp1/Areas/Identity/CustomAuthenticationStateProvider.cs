@@ -62,7 +62,8 @@ namespace BlazorApp1.Areas.Identity
 {
                         new Claim(ClaimTypes.Name, user.FirstName ?? user.Email),
                         new Claim(ClaimTypes.Email, user.Email),
-                        new Claim(ClaimTypes.Role, user.Role ?? "freelancer")
+                        new Claim(ClaimTypes.Role, user.Role ?? "freelancer"),
+                        new Claim(ClaimTypes.NameIdentifier, user.Id)
                     }, "Custom authentication type");
                     var claim = new ClaimsPrincipal(identity);
                     return await Task.FromResult(new AuthenticationState(claim));

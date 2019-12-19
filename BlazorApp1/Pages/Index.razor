@@ -16,7 +16,7 @@
             <div>
                 <style>
                     .app-fab--absolute {
-                        position: fixed;
+                        position: absolute;
                         bottom: 13rem;
                         right: 53rem;
                     }
@@ -103,7 +103,7 @@
                         </MatDialogContent>
                         <MatDialogActions>
                             <MatButton OnClick="@(e => { dialogIsOpen = false; })">Close</MatButton>
-                            <MatButton OnClick="@(() => OnSubmitAsync())">Submit</MatButton>
+                            <MatButton OnClick="@(() => OnSubmitAsync(context.User))">Submit</MatButton>
                         </MatDialogActions>
                     </MatDialog>
                 }
@@ -160,11 +160,9 @@
     }
     private List<Job> Jobs;
 
-    protected override void OnAfterRender(bool firstRender)
+    protected override void OnInitialized()
     {
         Jobs = db.Jobs.ToList();
-        if (firstRender)
-            StateHasChanged();
     }
 
     protected void PostJob()
@@ -178,8 +176,15 @@
         SelectedJobClient = db.Find<User>(SelectedJob.ClientId);
         dialogIsOpen = true;
     }
-    protected async Task OnSubmitAsync()
+    protected async Task OnSubmitAsync(System.Security.Claims.ClaimsPrincipal claims)
     {
-
+        dialogIsOpen = false;
+        var user = await _userManager.GetUserAsync(claims);
+        user.CurrentJobs += " " + SelectedJob.JobId;
+        user.CurrentJobs = user.CurrentJobs.Trim();
+        SelectedJobClient.CurrentJobs += " " + SelectedJob.JobId;
+        SelectedJobClient.CurrentJobs = SelectedJobClient.CurrentJobs.Trim();
+        SelectedJob.FreelancerId = user.Id;
+        await db.SaveChangesAsync();
     }
 }
