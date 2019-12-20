@@ -57,8 +57,37 @@
                     foreach (var jobId in CurrentJobs)
                     {
                         var job = _applicationDbContext.Find<Job>(jobId);
-                        <NavLink class="nav-link" Match="NavLinkMatch.All" href=@($"/chats/{job.FreelancerId}_{job.ClientId}")>@job.Title</NavLink>
+                        <tr>
+                            <td>
+                                <NavLink class="nav-link" Match="NavLinkMatch.All" href=@($"/chats/{job.FreelancerId}_{job.ClientId}")>@job.Title</NavLink>
+                            </td>
+                            <td>
+                                <MatIconButton Icon="settings" OnClick="@(() => OpenSettings(jobId))"></MatIconButton>
+                            </td>
+                        </tr>
                     }
+                <MatDialog @bind-IsOpen="@dialogIsOpen">
+                <MatDialogTitle>Set message self-destructive time</MatDialogTitle>
+                <MatDialogContent>
+                    <p>
+                        <MatRadioGroup @bind-Value="@TimeValue">
+                            <MatRadioButton Value="@("d")" Label="Days"></MatRadioButton>
+                            <MatRadioButton Value="@("h")" Label="Hours"></MatRadioButton>
+                            <MatRadioButton Value="@("m")" Label="Minutes"></MatRadioButton>
+                            <MatRadioButton Value="@("s")" Label="Seconds"></MatRadioButton>
+                        </MatRadioGroup>
+                    </p>
+                    <p>
+                    <p>
+                        <MatTextField  @bind-Value="@Duration" Label="Standard" Icon="timer" Outlined="true"></MatTextField>
+                    </p>
+                    </p>
+                </MatDialogContent>
+                <MatDialogActions>
+                    <MatButton OnClick="@(_ => { dialogIsOpen = false; })">Cancel</MatButton>
+                    <MatButton OnClick="@OkClick">OK</MatButton>
+                </MatDialogActions>
+            </MatDialog>
             }
         </div>
     </Authorized>
@@ -67,6 +96,7 @@
 
 @code {
     bool chatting = false;
+    bool dialogIsOpen = false;
     string newMessage = null;
     string userName = null;
 
@@ -78,6 +108,9 @@
     string userId = null;
     string anotherUserId = null;
     string[] CurrentJobs { get; set; }
+    string[] MessagesForDeleting { get; set; }
+    protected string TimeValue { get; set; } = "d";
+    protected string Duration { get; set; } = "1";
 
     protected async override Task OnInitializedAsync()
     {
@@ -98,7 +131,7 @@
 
     }
 
-    protected override void OnAfterRender(bool firstRender)
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (UserIds != null)
         {
@@ -106,6 +139,28 @@
             if (anotherUserId == userId)
                 anotherUserId = UserIds.Split('_')[1];
             chatting = true;
+            if (MessagesForDeleting != null)
+            {
+                try
+                {
+                    foreach(var id in MessagesForDeleting)
+                    {
+                        var res = _applicationDbContext.Find<Message>(id);
+                        if (res != null)
+                            _applicationDbContext.Remove(res);
+                    }
+                    _applicationDbContext.SaveChanges();
+                }
+                catch(Exception e)
+                {
+
+                }
+                finally
+                {
+                    MessagesForDeleting = null;
+                }
+
+            }
             messages = _applicationDbContext.Messages
                 .Where((user) => (user.FirstUserId == anotherUserId || user.FirstUserId == userId) &&
                                 (user.SecondUserId == anotherUserId || user.SecondUserId == userId))
@@ -118,6 +173,15 @@
     }
     async Task NotifyUser(Tuple<string, string> response)
     {
+        if (response == null)
+        {
+            return;
+        }
+        if (response.Item1 == null)
+        {
+            MessagesForDeleting = response.Item2.Split();
+            return;
+        }
         var username = response.Item1;
         var message = response.Item2;
         messages.Add(new Message(username, message, userName == username));
@@ -145,12 +209,25 @@
         _chatService.NotifyUser(userId, newMessage, userName);
         _applicationDbContext.Messages.Add(new Message(userName, newMessage, false)
         {
-            IsSecret = false,
+            IsSecret = true,
             FirstUserId = userId,
             SecondUserId = anotherUserId
         });
-        _applicationDbContext.SaveChanges();
-        newMessage = "";
+
+        try
+        {
+            _applicationDbContext.SaveChanges();
+            newMessage = "";
+        }
+        catch (Exception e)
+        {    
+            messages.Add(new Message(userName, newMessage, false));
+            newMessage = "";
+
+            StateHasChanged();
+        }
+        
+
     }
 
     public void Dispose()
@@ -160,5 +237,40 @@
             connection.StopAsync();
             connection.DisposeAsync();
         }
+    }
+
+    private string currentJob = null;
+    public void OpenSettings(string jobId)
+    {
+        dialogIsOpen = true;
+        currentJob = jobId;
+    }
+
+    void OkClick()
+    {
+        int duration;
+        if (!Int32.TryParse(Duration, out duration) || duration < 1)
+            return;
+        var job = _applicationDbContext.Find<Job>(currentJob);
+        string key = job.ClientId.GetHashCode() < job.FreelancerId.GetHashCode() ?
+                                                job.ClientId + "_" + job.FreelancerId :
+                                                job.FreelancerId + "_" + job.ClientId;
+        switch(TimeValue)
+        {
+            case "s":
+                _chatService.AddTimer(key, TimeSpan.FromSeconds(duration));
+                break;
+            case "m":
+                _chatService.AddTimer(key, TimeSpan.FromMinutes(duration));
+                break;
+            case "h":
+                _chatService.AddTimer(key, TimeSpan.FromHours(duration));
+                break;
+            case "d":
+                _chatService.AddTimer(key, TimeSpan.FromDays(duration));
+                break;
+        }
+        dialogIsOpen = false;
+
     }
 }

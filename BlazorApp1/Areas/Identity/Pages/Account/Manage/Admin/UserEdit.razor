@@ -99,9 +99,12 @@
                 _navigationManager.NavigateTo("/Identity/Account/Admin/UserIndex");
             }
 
+            if (userRole != null)
+            {
+                await _userManager.AddToRolesAsync(user, new List<string> { UserRole});
+                await _userManager.RemoveFromRolesAsync(user, userRoles);
+            }
 
-            await _userManager.AddToRolesAsync(user, new List<string> { UserRole});
-            await _userManager.RemoveFromRolesAsync(user, userRoles);
 
             if (user.UserName == authState.User.Identity.Name)
             {

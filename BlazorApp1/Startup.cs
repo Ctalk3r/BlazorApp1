@@ -56,6 +56,7 @@ namespace BlazorApp1
 			services.AddRazorPages();
 			// services.AddSession();
 			// services.AddMemoryCache();
+			services.AddHostedService<TimedHostedService>();
 			services.AddBlazoredSessionStorage();
 			services.AddServerSideBlazor();
 			services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
