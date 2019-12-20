@@ -4,6 +4,7 @@
 @attribute [Authorize]
 @using Microsoft.AspNetCore.SignalR.Client
 @using Microsoft.AspNetCore.Identity
+@using Microsoft.EntityFrameworkCore
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject UserManager<User> _userManager
 @inject NavigationManager  _navigationManager
@@ -78,9 +79,7 @@
                         </MatRadioGroup>
                     </p>
                     <p>
-                    <p>
                         <MatTextField  @bind-Value="@Duration" Label="Standard" Icon="timer" Outlined="true"></MatTextField>
-                    </p>
                     </p>
                 </MatDialogContent>
                 <MatDialogActions>
@@ -99,8 +98,11 @@
     bool dialogIsOpen = false;
     string newMessage = null;
     string userName = null;
+    static object locker = new object();
 
     List<Message> messages = new List<Message>();
+    List<Message> Saved = new List<Message>();
+
 
     [Parameter]
     public string UserIds { get; set; }
@@ -141,26 +143,32 @@
             chatting = true;
             if (MessagesForDeleting != null)
             {
-                try
+
+                foreach(var id in MessagesForDeleting)
                 {
-                    foreach(var id in MessagesForDeleting)
+                    var res = _applicationDbContext.Find<Message>(id);
+                    if (res != null)
+                        _applicationDbContext.Remove(res);
+                }
+                MessagesForDeleting = null;
+
+                var saved = false;
+                while (!saved)
+                {
+                    try
                     {
-                        var res = _applicationDbContext.Find<Message>(id);
-                        if (res != null)
-                            _applicationDbContext.Remove(res);
+                        // Attempt to save changes to the database
+                        _applicationDbContext.SaveChanges();
+                        newMessage = "";
+                        saved = true;
                     }
-                    _applicationDbContext.SaveChanges();
+                    catch (DbUpdateConcurrencyException ex)
+                    {
+                        ex.Entries.Single().Reload();
+                    }
                 }
-                catch(Exception e)
-                {
-
-                }
-                finally
-                {
-                    MessagesForDeleting = null;
-                }
-
             }
+
             messages = _applicationDbContext.Messages
                 .Where((user) => (user.FirstUserId == anotherUserId || user.FirstUserId == userId) &&
                                 (user.SecondUserId == anotherUserId || user.SecondUserId == userId))
@@ -207,26 +215,55 @@
         //await connection.InvokeAsync("SendMessage", userName, newMessage, anotherUserId);
         _chatService.NotifyUser(anotherUserId, newMessage, userName);
         _chatService.NotifyUser(userId, newMessage, userName);
-        _applicationDbContext.Messages.Add(new Message(userName, newMessage, false)
+        var tempMessage = new Message(userName, newMessage, false)
         {
             IsSecret = true,
             FirstUserId = userId,
             SecondUserId = anotherUserId
-        });
+        };
+        _applicationDbContext.Entry(tempMessage).State = EntityState.Added;
+        _applicationDbContext.Messages.Add(tempMessage);
 
-        try
+
+        var saved = false;
+        while (!saved)
         {
-            _applicationDbContext.SaveChanges();
-            newMessage = "";
-        }
-        catch (Exception e)
-        {    
-            messages.Add(new Message(userName, newMessage, false));
-            newMessage = "";
+            try
+            {
+                // Attempt to save changes to the database
+                _applicationDbContext.SaveChanges();
+                newMessage = "";
+                saved = true;
+            }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                foreach (var entry in ex.Entries)
+                {
+                    if (entry.Entity is Message)
+                    {
+                        var proposedValues = entry.CurrentValues;
+                        var databaseValues = entry.GetDatabaseValues();
 
-            StateHasChanged();
+                        foreach (var property in proposedValues.Properties)
+                        {
+                            var proposedValue = proposedValues?[property];
+                            var databaseValue = databaseValues?[property];
+
+
+                        }
+                        if(databaseValues != null)
+                            entry.OriginalValues.SetValues(databaseValues);
+                    }
+                    else
+                    {
+                        throw new NotSupportedException(
+                            "Don't know how to handle concurrency conflicts for "
+                            + entry.Metadata.Name);
+                    }
+                }
+                ex.Entries.Single().Reload();
+            }
         }
-        
 
     }
 

@@ -48,7 +48,7 @@ namespace BlazorApp1
 				{
 					var D = Dispatcher.CreateDefault();
 					D.InvokeAsync(async () => await notifyDict[group.Key.Split('_')[0]].InvokeAsync(new Tuple<string, string>(null, String.Join(' ', deleted.Select(message => message.MesssageId)))));
-					D.InvokeAsync(async () => await notifyDict[group.Key.Split('_')[1]].InvokeAsync(new Tuple<string, string>(null, String.Join(' ', "delete"))));
+					D.InvokeAsync(async () => await notifyDict[group.Key.Split('_')[1]].InvokeAsync(new Tuple<string, string>(null, String.Join(' ', deleted.Select(message => message.MesssageId)))));
 				}
 			}
 		}

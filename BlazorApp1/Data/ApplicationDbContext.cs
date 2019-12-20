@@ -12,7 +12,7 @@ namespace BlazorApp1.Data
 		public DbSet<Job> Jobs { get; set; }
 		public DbSet<Message> Messages { get; set; }
 
-
+		public ApplicationDbContext() { }
 		public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
 			: base(options)
 		{

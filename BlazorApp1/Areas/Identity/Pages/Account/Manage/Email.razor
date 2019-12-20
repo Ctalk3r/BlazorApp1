@@ -70,7 +70,7 @@
                 Toaster.Add("Verification email sent. Please check your email", MatToastType.Info, "Info", "code");
                 return;
             }
-            catch (Exception e)
+            catch (Exception _)
             { 
                 Toaster.Add("There is no user with such email", MatToastType.Warning, "Warning", "code");
             }

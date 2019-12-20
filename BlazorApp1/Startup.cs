@@ -127,7 +127,7 @@ namespace BlazorApp1
 				endpoints.MapControllers();
 				endpoints.MapBlazorHub();
 				endpoints.MapFallbackToPage("/_Host");
-				endpoints.MapHub<ChatHub>("/chathub");
+				// endpoints.MapHub<ChatHub>("/chathub");
 			});
 		}
 	}
