@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
@@ -37,7 +38,7 @@ namespace BlazorApp1.Areas.Identity
         public static AuthenticationProperties Properties { get; set; }
         public static string Provider { get; set; }
 
-        private static bool IsAuthorized { get; set; }
+        private static Dictionary<string, bool> IsAuthorized { get; set; } = new Dictionary<string, bool>();
 
         public async override Task<AuthenticationState> GetAuthenticationStateAsync()
         {
@@ -53,7 +54,7 @@ namespace BlazorApp1.Areas.Identity
 
                 }
 
-                if (username != null && IsAuthorized)
+                if (username != null && IsAuthorized.ContainsKey(username) && IsAuthorized[username])
                 {
 
                     var user = await context.FindByEmailAsync(username);
@@ -97,13 +98,16 @@ namespace BlazorApp1.Areas.Identity
             await _sessionStorage.SetItemAsync("name", username);
             this.username = username;
             this.context = context;
-            IsAuthorized = true;
+            if (!IsAuthorized.ContainsKey(username))
+                IsAuthorized.Add(username, true);
+            else
+                IsAuthorized[username] = true;
             base.NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
         }
 
         public void MarkAsNonAuthentificated()
         {
-            IsAuthorized = false;
+            IsAuthorized[username] = false;
             base.NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
         }
     }

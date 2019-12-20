@@ -4,14 +4,16 @@ using BlazorApp1.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BlazorApp1.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20191220130444_SecretChat")]
+    partial class SecretChat
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -80,9 +82,6 @@ namespace BlazorApp1.Migrations
                     b.Property<bool>("IsSecret")
                         .HasColumnType("bit");
 
-                    b.Property<bool>("IsTimered")
-                        .HasColumnType("bit");
-
                     b.Property<string>("SecondUserId")
                         .HasColumnType("nvarchar(max)");
 
@@ -92,26 +91,6 @@ namespace BlazorApp1.Migrations
                     b.HasKey("MesssageId");
 
                     b.ToTable("Messages");
-                });
-
-            modelBuilder.Entity("BlazorApp1.Models.SecretChat", b =>
-                {
-                    b.Property<string>("ChatId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime>("CreationTime")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2");
-
-                    b.Property<long>("DurationTicks")
-                        .HasColumnType("bigint");
-
-                    b.Property<bool>("IsEncrypted")
-                        .HasColumnType("bit");
-
-                    b.HasKey("ChatId");
-
-                    b.ToTable("SecretChats");
                 });
 
             modelBuilder.Entity("BlazorApp1.Models.User", b =>

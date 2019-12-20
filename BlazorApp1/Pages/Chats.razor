@@ -5,12 +5,17 @@
 @using Microsoft.AspNetCore.SignalR.Client
 @using Microsoft.AspNetCore.Identity
 @using Microsoft.EntityFrameworkCore
+@using System.Security.Cryptography
+@using System.Text
+@using System.Security.Claims
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject UserManager<User> _userManager
 @inject NavigationManager  _navigationManager
 @inject ApplicationDbContext  _applicationDbContext
 @inject ChatService _chatService
 @inject IJSRuntime JsRuntime
+@inject Blazored.LocalStorage.ILocalStorageService _localStorage
+@inject IMatToaster Toaster
 
 
 <AuthorizeView>
@@ -27,7 +32,7 @@
                             <div class="button minimize"></div>
                             <div class="button maximize"></div>
                         </div>
-                        <div class="title">Chat</div>
+                        <div class="title">@(IsSecret ? "Secret chat" : "chat")</div>
                     </div>
                     <ul class="messages" id="1">
                         @for (int i = 0; i < messages.Count; ++i)
@@ -58,35 +63,86 @@
                     foreach (var jobId in CurrentJobs)
                     {
                         var job = _applicationDbContext.Find<Job>(jobId);
-                        <tr>
-                            <td>
-                                <NavLink class="nav-link" Match="NavLinkMatch.All" href=@($"/chats/{job.FreelancerId}_{job.ClientId}")>@job.Title</NavLink>
-                            </td>
-                            <td>
+                        <div style="display:flex; flex-direction: row">
+                            <MatIcon Icon="chat" />
+                            <NavLink class="nav-link" Match="NavLinkMatch.All" href=@($"/chats/{job.FreelancerId}_{job.ClientId}")><MatH6>@job.Title</MatH6></NavLink>
+                        </div>
+                        @if (_applicationDbContext.Find<SecretChat>(GetCombinedKey(job)) != null)
+                        {
+                            <div style="display:flex; flex-direction: row">
+                                <MatIcon Icon="security" />
+                                <NavLink class="nav-link" Match="NavLinkMatch.All" href=@($"/chats/{GetCombinedKey(job)}_s")>
+                                    <MatH6>@(job.Title + "(Secret)")</MatH6>
+                                </NavLink>
                                 <MatIconButton Icon="settings" OnClick="@(() => OpenSettings(jobId))"></MatIconButton>
-                            </td>
-                        </tr>
+                                <MatIconButton Icon="delete" OnClick="@(() => DeleteChat(jobId))"></MatIconButton>
+
+                            </div>
+                        }
                     }
                 <MatDialog @bind-IsOpen="@dialogIsOpen">
-                <MatDialogTitle>Set message self-destructive time</MatDialogTitle>
-                <MatDialogContent>
-                    <p>
-                        <MatRadioGroup @bind-Value="@TimeValue">
-                            <MatRadioButton Value="@("d")" Label="Days"></MatRadioButton>
-                            <MatRadioButton Value="@("h")" Label="Hours"></MatRadioButton>
-                            <MatRadioButton Value="@("m")" Label="Minutes"></MatRadioButton>
-                            <MatRadioButton Value="@("s")" Label="Seconds"></MatRadioButton>
-                        </MatRadioGroup>
-                    </p>
-                    <p>
-                        <MatTextField  @bind-Value="@Duration" Label="Standard" Icon="timer" Outlined="true"></MatTextField>
-                    </p>
-                </MatDialogContent>
-                <MatDialogActions>
-                    <MatButton OnClick="@(_ => { dialogIsOpen = false; })">Cancel</MatButton>
-                    <MatButton OnClick="@OkClick">OK</MatButton>
-                </MatDialogActions>
-            </MatDialog>
+                    <MatDialogTitle>Set message self-destructive time</MatDialogTitle>
+                    <MatDialogContent>
+                        <p>
+                            <MatRadioGroup @bind-Value="@TimeValue">
+                                <MatRadioButton Value="@("d")" Disabled="@(!needTimer)" Label="Days"></MatRadioButton>
+                                <MatRadioButton Value="@("h")" Disabled="@(!needTimer)" Label="Hours"></MatRadioButton>
+                                <MatRadioButton Value="@("m")" Disabled="@(!needTimer)" Label="Minutes"></MatRadioButton>
+                                <MatRadioButton Value="@("s")" Disabled="@(!needTimer)" Label="Seconds"></MatRadioButton>
+                            </MatRadioGroup>
+                        </p>
+
+                        <div style="display:flex; flex-direction: row">
+                            <MatTextField @bind-Value="@Duration" Disabled="@(!needTimer)" Label="Timer" Icon="timer" Outlined="true"></MatTextField>
+                            <MatSlideToggle @bind-Checked="@needTimer"></MatSlideToggle>
+                            <span>@(needTimer ? " On" : " Off")</span>
+                        </div>
+                    </MatDialogContent>
+                    <MatDialogActions>
+                        <MatButton OnClick="@(_ => { dialogIsOpen = false; })">Cancel</MatButton>
+                        <MatButton OnClick="@OkClick">OK</MatButton>
+                    </MatDialogActions>
+                </MatDialog>
+
+                <MatDialog @bind-IsOpen="@secretDialogIsOpen">
+                    <MatDialogTitle>Choose user to start secret chat</MatDialogTitle>
+                    <MatDialogContent>
+
+                        <p>
+                            <MatSelect Label="Jobs" @bind-Value="@secretJobId">
+                                @if (CurrentJobs != null)
+                                    foreach (var jobId in CurrentJobs)
+                                    {
+                                        var job = _applicationDbContext.Find<Job>(jobId);
+                                        if (_applicationDbContext.Find<SecretChat>(GetCombinedKey(job)) == null)
+                                        {
+                                            <MatOption Value="@jobId">@(job.Title.Count() > 30 ? job.Title.Substring(0, 30) + "..." : job.Title)</MatOption>
+                                        }
+                                    }
+
+                            </MatSelect>
+                        </p>
+                        <div>
+                            <MatCheckbox @bind-Checked="@IsEncrypted" Label="Encrypt messages"></MatCheckbox>
+                        </div>
+                    </MatDialogContent>
+                    <MatDialogActions>
+                        <MatButton OnClick="@(_ => { secretDialogIsOpen = false; })">Cancel</MatButton>
+                        <MatButton OnClick="@SecretOkClick">Create</MatButton>
+                    </MatDialogActions>
+                </MatDialog>
+                <style>
+                    .app-fab--absolute {
+                        background-color: peachpuff;
+                        color: purple;
+                        position: fixed;
+                        bottom: 25rem;
+                        right: 10rem;
+                    }
+                </style>
+
+                <MatFAB Class="app-fab--absolute"
+                        Label="Create Secret Chat" OnClick="@(_ => { secretDialogIsOpen = true; })"></MatFAB>
             }
         </div>
     </Authorized>
@@ -96,14 +152,17 @@
 @code {
     bool chatting = false;
     bool dialogIsOpen = false;
+    bool secretDialogIsOpen = false;
+    bool needTimer = false;
     string newMessage = null;
     string userName = null;
+    string secretJobId = null;
     static object locker = new object();
 
     List<Message> messages = new List<Message>();
-    List<Message> Saved = new List<Message>();
 
-
+    public bool IsSecret { get; set; } = false;
+    public bool IsEncrypted { get; set; } = false;
     [Parameter]
     public string UserIds { get; set; }
     HubConnection connection;
@@ -119,11 +178,21 @@
 
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
         var user = authState.User;
-        userName = user.Identity.Name;
+        userName = user.FindFirst(ClaimTypes.Email)?.Value; ;
         userId = _userManager.GetUserId(user);
-        CurrentJobs = (await _userManager.FindByIdAsync(userId)).CurrentJobs?.Split();
+        CurrentJobs = (await _userManager.FindByIdAsync(userId)).CurrentJobs?.Replace('\r', ' ').Split(' ');
+        if (CurrentJobs != null)
+            for (int i = 0; i < CurrentJobs.Length; ++i)
+                CurrentJobs[i] = CurrentJobs[i].Trim();
+        CurrentJobs = CurrentJobs.Where(x => x != "").ToArray();
         if (UserIds != null && userId != UserIds.Split('_')[1] && userId != UserIds.Split('_')[1])
             _navigationManager.NavigateTo("/");
+        if (UserIds != null)
+        {
+            IsSecret = (UserIds.Split('_').Count() == 3 && UserIds.Split('_')[2] == "s");
+            Duration = _applicationDbContext.Find<SecretChat>(GetCombinedKey(UserIds)).Timer.Seconds.ToString();
+            needTimer = (TimeSpan.Parse(Duration) != TimeSpan.Zero ? true : false);
+        }
         //Initialize SignalR
         //    connection = new HubConnectionBuilder()
         //.WithUrl("https://localhost:44306/chathub")
@@ -137,6 +206,9 @@
     {
         if (UserIds != null)
         {
+            IsSecret = (UserIds.Split('_').Count() == 3 && UserIds.Split('_')[2] == "s");
+            Duration = _applicationDbContext.Find<SecretChat>(GetCombinedKey(UserIds)).Timer.Seconds.ToString();
+            needTimer = (TimeSpan.Parse(Duration) != TimeSpan.Zero ? true : false);
             anotherUserId = UserIds.Split('_')[0];
             if (anotherUserId == userId)
                 anotherUserId = UserIds.Split('_')[1];
@@ -144,7 +216,7 @@
             if (MessagesForDeleting != null)
             {
 
-                foreach(var id in MessagesForDeleting)
+                foreach (var id in MessagesForDeleting)
                 {
                     var res = _applicationDbContext.Find<Message>(id);
                     if (res != null)
@@ -172,10 +244,16 @@
             messages = _applicationDbContext.Messages
                 .Where((user) => (user.FirstUserId == anotherUserId || user.FirstUserId == userId) &&
                                 (user.SecondUserId == anotherUserId || user.SecondUserId == userId))
+                .Where(message => message.IsSecret == IsSecret)
                 .OrderBy(el => el.CreationTime)
                 .Skip(Math.Max(0, _applicationDbContext.Messages.Count() - 50))
                 .ToList();
             messages.ForEach((message) => message.IsMine = userId == message.FirstUserId);
+            if (IsEncrypted)
+                for (int i = 0; i < messages.Count; ++i)
+                    if (!messages[i].IsMine)
+                        messages[i].Body = await DecryptMessage(messages[i].SecondUserId,
+                                    messages[i].Body);
             StateHasChanged();
         }
     }
@@ -192,6 +270,26 @@
         }
         var username = response.Item1;
         var message = response.Item2;
+        if (IsEncrypted && username.Split('_').Count() == 2)
+        {
+            if (username.Split('_')[0] == "sent")
+            {
+                var anotherUserId = username.Split('_')[1];
+                var publicKey = await GetKeys(anotherUserId);
+                await _localStorage.SetItemAsync("public_key_of_" + anotherUserId, message);
+                _chatService.NotifyUser(anotherUserId, publicKey, "get_" + userId);
+            }
+            else if (username.Split('_')[0] == "get")
+            {
+                var anotherUserId = username.Split('_')[1];
+                await _localStorage.SetItemAsync("public_key_of_" + anotherUserId, message);
+            }
+        }
+        if (IsEncrypted)
+        {
+            var user = await _userManager.FindByEmailAsync(username);
+            message = await DecryptMessage(user.Id, message);
+        }
         messages.Add(new Message(username, message, userName == username));
         // await JsRuntime.InvokeVoidAsync("scrollDown");
     }
@@ -212,14 +310,31 @@
 
     async Task Send()
     {
-        //await connection.InvokeAsync("SendMessage", userName, newMessage, anotherUserId);
+        if (IsEncrypted)
+        {
+            try
+            {
+                var t = await EncryptMessage(anotherUserId, newMessage);
+                messages.Add(new Message(userName, newMessage, true));
+                newMessage = t;
+            }
+            catch (Exception _)
+            {
+                Toaster.Add("Another user haven't accept invite yet", MatToastType.Info, "Info", "code");
+                return;
+            }
+        }
+        else
+        {
+            _chatService.NotifyUser(userId, newMessage, userName);
+        }
         _chatService.NotifyUser(anotherUserId, newMessage, userName);
-        _chatService.NotifyUser(userId, newMessage, userName);
         var tempMessage = new Message(userName, newMessage, false)
         {
-            IsSecret = true,
+            IsSecret = IsSecret,
             FirstUserId = userId,
-            SecondUserId = anotherUserId
+            SecondUserId = anotherUserId,
+            IsTimered = needTimer
         };
         _applicationDbContext.Entry(tempMessage).State = EntityState.Added;
         _applicationDbContext.Messages.Add(tempMessage);
@@ -249,9 +364,8 @@
                             var proposedValue = proposedValues?[property];
                             var databaseValue = databaseValues?[property];
 
-
                         }
-                        if(databaseValues != null)
+                        if (databaseValues != null)
                             entry.OriginalValues.SetValues(databaseValues);
                     }
                     else
@@ -280,7 +394,124 @@
     public void OpenSettings(string jobId)
     {
         dialogIsOpen = true;
+        var job = _applicationDbContext.Find<Job>(jobId);
+        if (job == null)
+            return;
+        TimeValue = "s";
+        Duration = _applicationDbContext.Find<SecretChat>(GetCombinedKey(job.ClientId + "_" + job.FreelancerId)).Timer.Seconds.ToString();
+        needTimer = (TimeSpan.Parse(Duration) != TimeSpan.Zero ? true : false);
         currentJob = jobId;
+    }
+
+    private bool CompareStrings(string s1, string s2)
+    {
+        if (s1.Length < s2.Length)
+            return true;
+        if (s1.Length > s2.Length)
+            return false;
+        for (int i = 0; i < s1.Length; ++i)
+        {
+            if ((int)s1[i] < (int)s2[i])
+                return true;
+            if ((int)s1[i] > (int)s2[i])
+                return false;
+        }
+        return true;
+    }
+
+    private string GetCombinedKey(Job job)
+    {
+        return CompareStrings(job.ClientId, job.FreelancerId) ?
+                                                job.ClientId + "_" + job.FreelancerId :
+                                                job.FreelancerId + "_" + job.ClientId;
+    }
+    private string GetCombinedKey(string ids)
+    {
+        return CompareStrings(ids.Split('_')[0], ids.Split('_')[1]) ?
+                                               ids.Split('_')[0] + "_" + ids.Split('_')[1] :
+                                               ids.Split('_')[1] + "_" + ids.Split('_')[0];
+    }
+
+    async Task SecretOkClick()
+    {
+        if (secretJobId == null || secretJobId == "")
+            return;
+        var job = _applicationDbContext.Find<Job>(secretJobId);
+        _applicationDbContext.Add<SecretChat>(new SecretChat(GetCombinedKey(job)));
+        _applicationDbContext.SaveChanges();
+        if (IsEncrypted)
+        {
+            var anotherUser = (userId == job.FreelancerId ? job.ClientId : job.FreelancerId);
+            var publicKey = await GetKeys(anotherUser);
+            _chatService.NotifyUser(anotherUser, publicKey, "sent_" + userId);
+        }
+        secretDialogIsOpen = false;
+
+    }
+
+    async Task<string> GetKeys(string anotherUser)
+    {
+        RSACryptoServiceProvider RSA = new RSACryptoServiceProvider();
+
+        var privateKey = RSA.ToXmlString(true);
+        var publicKey = RSA.ToXmlString(false);
+
+        await _localStorage.SetItemAsync("private_key_with_" + anotherUser, privateKey);
+        return publicKey;
+    }
+
+    async Task<string> EncryptMessage(string anotherUserId, string message)
+    {
+        var anotherPublicKey = await _localStorage.GetItemAsync<string>("public_key_of_" + anotherUserId);
+        RSACryptoServiceProvider RSA = new RSACryptoServiceProvider();
+        RSA.FromXmlString(anotherPublicKey);
+        UnicodeEncoding byteConverter = new UnicodeEncoding();
+        byte[] encBytes = RSA.Encrypt(byteConverter.GetBytes(message), false);
+
+        string encrypt = byteConverter.GetString(encBytes);
+        return encrypt;
+    }
+
+    async Task<string> DecryptMessage(string anotherUserid, string encrypt)
+    {
+        var privateKey = await _localStorage.GetItemAsync<string>("private_key_with_" + anotherUserId);
+        RSACryptoServiceProvider RSA = new RSACryptoServiceProvider();
+        RSA.FromXmlString(privateKey);
+        UnicodeEncoding byteConverter = new UnicodeEncoding();
+        byte[] encBytes = byteConverter.GetBytes(encrypt);
+
+        byte[] decBytes = RSA.Decrypt(encBytes, false);
+        var message = byteConverter.GetString(decBytes);
+        return message;
+    }
+
+    void DeleteChat(string jobId)
+    {
+        var job = _applicationDbContext.Find<Job>(jobId);
+        if (job == null)
+            return;
+        var chatId = GetCombinedKey(job);
+        var deleteChat = _applicationDbContext.Find<SecretChat>(chatId);
+        var deletedMessages = _applicationDbContext.Messages.Where(message => (message.FirstUserId == job.ClientId || message.FirstUserId == job.FreelancerId) &&
+                                (message.SecondUserId == job.ClientId || message.SecondUserId == job.FreelancerId))
+                                .Where(message => message.IsSecret);
+        foreach (var message in deletedMessages)
+            _applicationDbContext.Messages.Remove(message);
+        _applicationDbContext.SecretChats.Remove(deleteChat);
+        var saved = false;
+        while (!saved)
+        {
+            try
+            {
+                // Attempt to save changes to the database
+                _applicationDbContext.SaveChanges();
+                saved = true;
+            }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                ex.Entries.Single().Reload();
+            }
+        }
     }
 
     void OkClick()
@@ -288,25 +519,31 @@
         int duration;
         if (!Int32.TryParse(Duration, out duration) || duration < 1)
             return;
+
         var job = _applicationDbContext.Find<Job>(currentJob);
-        string key = job.ClientId.GetHashCode() < job.FreelancerId.GetHashCode() ?
-                                                job.ClientId + "_" + job.FreelancerId :
-                                                job.FreelancerId + "_" + job.ClientId;
-        switch(TimeValue)
+        string key = GetCombinedKey(job);
+        if (needTimer == false)
+        {
+            _applicationDbContext.SecretChats.Find(key).Timer = TimeSpan.Zero;
+            dialogIsOpen = false;
+            return;
+        }
+        switch (TimeValue)
         {
             case "s":
-                _chatService.AddTimer(key, TimeSpan.FromSeconds(duration));
+                _applicationDbContext.SecretChats.Find(key).Timer = TimeSpan.FromSeconds(duration);
                 break;
             case "m":
-                _chatService.AddTimer(key, TimeSpan.FromMinutes(duration));
+                _applicationDbContext.SecretChats.Find(key).Timer = TimeSpan.FromMinutes(duration);
                 break;
             case "h":
-                _chatService.AddTimer(key, TimeSpan.FromHours(duration));
+                _applicationDbContext.SecretChats.Find(key).Timer = TimeSpan.FromHours(duration);
                 break;
             case "d":
-                _chatService.AddTimer(key, TimeSpan.FromDays(duration));
+                _applicationDbContext.SecretChats.Find(key).Timer = TimeSpan.FromDays(duration);
                 break;
         }
+        _applicationDbContext.SaveChanges();
         dialogIsOpen = false;
 
     }

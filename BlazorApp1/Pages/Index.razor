@@ -8,6 +8,8 @@
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject SignInManager<User> _signInManager
 @inject UserManager<User> _userManager
+@inject IMatToaster Toaster
+
 
 <AuthorizeView Roles="admin, client, freelancer">
     <NotAuthorized>
@@ -47,7 +49,7 @@
         {
             <h1>Current Feed</h1>
             <MatThemeProvider Theme="@theme2">
-                <MatTable SortByParamName="Price" Descending="true" Items="@Jobs" class="mat-elevation-z5" SearchTermFieldPlaceHolder="" FilterByColumnName="Title" AllowSelection="true">
+                <MatTable SortByParamName="Price" Descending="true" Items="@Jobs" class="mat-elevation-z5" SearchTermFieldPlaceHolder="" FilterByColumnName="Description" AllowSelection="true">
                     <MatTableHeader>
                         <th>Price</th>
                         <th>Skills</th>
@@ -57,10 +59,10 @@
                         <td>@String.Format("${0:f2}", job.Price)</td>
                         <td>
                             @if (job.Skills != null)
-                            foreach (var skill in job.Skills.Split(','))
-                            {
-                                <MatChip Style="background-color:lightblue;" Label="@skill"></MatChip>
-                            }
+                                    foreach (var skill in job.Skills.Split(','))
+                                    {
+                                    <MatChip Style="background-color:lightblue;" Label="@skill"></MatChip>
+                                    }
                         </td>
                         <td>
                             <a @onclick="@(() => OnSelectJob(job.JobId))">
@@ -71,60 +73,62 @@
                             </a>
                         </td>
                     </MatTableRow>
-                        </MatTable>
-                    </MatThemeProvider>
-                    <MatDialog @bind-IsOpen="@dialogIsOpen">
-                        <MatDialogTitle>@SelectedJob?.Title</MatDialogTitle>
-                        <MatDialogContent>
-                            <tr>
-                                <td><MatSubtitle1>Estimated Time:  </MatSubtitle1></td>
-                                <td>@(SelectedJob?.EstimatedTime == null ?
-                                                        "unknown" : 
-                                                        SelectedJob?.EstimatedTime.Days.ToString()) days</td>
-                            </tr>
-                            <MatH6>Client Info</MatH6>
-                            <tr>
-                                <td><MatSubtitle1>Name: </MatSubtitle1></td>
-                                <td>@SelectedJobClient?.SecondName @(SelectedJobClient?.FirstName ?? "unknown")</td>
-                            </tr>
-                            <tr>
-                                <td><MatSubtitle1>Email: </MatSubtitle1></td>
-                                <td>@(SelectedJobClient?.Email ?? "unknown")</td>
-                            </tr>
-                            <tr>
-                                <td><MatSubtitle1>Locality:  </MatSubtitle1></td>
-                                <td><MatIcon>location_on</MatIcon>@(SelectedJobClient?.Country ?? "unknown"), @SelectedJobClient?.City</td>
-                            </tr>
-                            <tr>
-                                <td><MatSubtitle1>Successfull jobs:  </MatSubtitle1></td>
-                                <td>@(SelectedJobClient?.SuccessfulJobsNumber.ToString() ?? "unknown")</td>
-                            </tr>
-                            Member since @(SelectedJobClient?.RegistrationDate.Date.ToString("dd-MM-yyyy") ?? "unknown")
-                        </MatDialogContent>
-                        <MatDialogActions>
-                            <MatButton OnClick="@(e => { dialogIsOpen = false; })">Close</MatButton>
-                            <MatButton OnClick="@(() => OnSubmitAsync(context.User))">Submit</MatButton>
-                        </MatDialogActions>
-                    </MatDialog>
-                }
-                else if (context.User.IsInRole("client") || context.User.IsInRole("admin") && Mode == "client")
-                {
+                </MatTable>
+            </MatThemeProvider>
+            <MatDialog @bind-IsOpen="@dialogIsOpen">
+                <MatDialogTitle>@SelectedJob?.Title</MatDialogTitle>
+                <MatDialogContent>
                     <tr>
-                        <MatTextField PlaceHolder="Find jobs and freelancers" @bind-Value="@searchString"></MatTextField>
-                        <MatIconButton Icon="search" OnClick="@RunOnClick"></MatIconButton>
-                    </tr>
-                    <style>
-                        .app-fab--absolute {
-                            color: aqua; 
-                            position: fixed;
-                            bottom: 5rem;
-                            right: 5rem;
-                        }
-                    </style>
+                        <td><MatSubtitle1>Estimated Time:  </MatSubtitle1></td>
+                        <td>
+                            @(SelectedJob?.EstimatedTime == null ?
+                                            "unknown" :
+                                            SelectedJob?.EstimatedTime.Days.ToString()) days
+                    </td>
+                </tr>
+                <MatH6>Client Info</MatH6>
+                <tr>
+                    <td><MatSubtitle1>Name: </MatSubtitle1></td>
+                    <td>@SelectedJobClient?.SecondName @(SelectedJobClient?.FirstName ?? "unknown")</td>
+                </tr>
+                <tr>
+                    <td><MatSubtitle1>Email: </MatSubtitle1></td>
+                    <td>@(SelectedJobClient?.Email ?? "unknown")</td>
+                </tr>
+                <tr>
+                    <td><MatSubtitle1>Locality:  </MatSubtitle1></td>
+                    <td><MatIcon>location_on</MatIcon>@(SelectedJobClient?.Country ?? "unknown"), @SelectedJobClient?.City</td>
+                </tr>
+                <tr>
+                    <td><MatSubtitle1>Successfull jobs:  </MatSubtitle1></td>
+                    <td>@(SelectedJobClient?.SuccessfulJobsNumber.ToString() ?? "unknown")</td>
+                </tr>
+                Member since @(SelectedJobClient?.RegistrationDate.Date.ToString("dd-MM-yyyy") ?? "unknown")
+            </MatDialogContent>
+            <MatDialogActions>
+                <MatButton OnClick="@(e => { dialogIsOpen = false; })">Close</MatButton>
+                <MatButton OnClick="@(() => OnSubmitAsync(context.User))" Disabled="@(SelectedJob?.Status != 0)">Submit</MatButton>
+            </MatDialogActions>
+        </MatDialog>
+    }
+    else if (context.User.IsInRole("client") || context.User.IsInRole("admin") && Mode == "client")
+    {
+        <tr>
+            <MatTextField PlaceHolder="Find jobs and freelancers" @bind-Value="@searchString"></MatTextField>
+            <MatIconButton Icon="search" OnClick="@RunOnClick"></MatIconButton>
+        </tr>
+        <style>
+            .app-fab--absolute {
+                color: aqua;
+                position: fixed;
+                bottom: 5rem;
+                right: 5rem;
+            }
+        </style>
 
-                    <MatFAB Class="app-fab--absolute"
-                            Label="Post new job" OnClick="@(_ => PostJob())"></MatFAB>
-                }
+        <MatFAB Class="app-fab--absolute"
+                Label="Post new job" OnClick="@(_ => PostJob())"></MatFAB>
+    }
 
     </Authorized>
 </AuthorizeView>
@@ -180,11 +184,16 @@
     {
         dialogIsOpen = false;
         var user = await _userManager.GetUserAsync(claims);
-        user.CurrentJobs += " " + SelectedJob.JobId;
+        if (SelectedJob.ClientId == user.Id)
+            return;
+        user.CurrentJobs += ' ' + SelectedJob.JobId;
         user.CurrentJobs = user.CurrentJobs.Trim();
-        SelectedJobClient.CurrentJobs += " " + SelectedJob.JobId;
+        SelectedJobClient.CurrentJobs += ' ' + SelectedJob.JobId;
         SelectedJobClient.CurrentJobs = SelectedJobClient.CurrentJobs.Trim();
         SelectedJob.FreelancerId = user.Id;
+        SelectedJob.Status = 1;
         await db.SaveChangesAsync();
+        Toaster.Add("Get this job!", MatToastType.Success, "Success", "code");
+
     }
 }

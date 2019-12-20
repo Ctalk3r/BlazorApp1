@@ -1,7 +1,77 @@
 ﻿@page "/jobs"
+@attribute [Authorize]
+@using Microsoft.AspNetCore.Identity
+@using System.Security.Claims
+
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject UserManager<User> _userManager
+@inject ApplicationDbContext  _applicationDbContext
+@inject NavigationManager  _navigationManager
 
 <h3>Jobs</h3>
 
+<MatTabGroup>
+    <MatTab Label="Current Jobs">
+        <MatTable SortByParamName="Price" Descending="true" Items="@ListJobs" class="mat-elevation-z5" SearchTermFieldPlaceHolder="" AllowSelection="true">
+            <MatTableHeader>
+                <th>Price</th>
+                <th>Skills</th>
+                <th>Description</th>
+            </MatTableHeader>
+            <MatTableRow Context="job">
+                <td>@String.Format("${0:f2}", job.Price)</td>
+                <td>
+                    @if (job.Skills != null)
+                        foreach (var skill in job.Skills.Split(','))
+                        {
+                            <MatChip Style="background-color:lightblue;" Label="@skill"></MatChip>
+                        }
+                </td>
+                <td>
+                    <h6 class="mat-h6">@job.Title</h6>
+                    <div class="mat-body2" style="color:Highlight">
+                        @job.Description
+                    </div>
+                </td>
+            </MatTableRow>
+        </MatTable>
+    </MatTab>
+    <MatTab Label="Pending Jobs">
+        Second Content
+    </MatTab>
+    <MatTab Label="Completed Jobs">
+        Third Content
+    </MatTab>
+
+</MatTabGroup>
+
 @code {
 
+    string userName = null;
+    string userId = null;
+    string[] CurrentJobs { get; set; }
+    List<Job> ListJobs = new List<Job>();
+
+    protected async override Task OnInitializedAsync()
+    {
+
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+        userName = user.FindFirst(ClaimTypes.Email)?.Value; ;
+        userId = _userManager.GetUserId(user);
+        CurrentJobs = (await _userManager.FindByIdAsync(userId)).CurrentJobs?.Replace('\r', ' ').Split(' ');
+        if (CurrentJobs != null)
+            for (int i = 0; i < CurrentJobs.Length; ++i)
+                CurrentJobs[i] = CurrentJobs[i].Trim();
+        CurrentJobs = CurrentJobs.Where(x => x != "").ToArray();
+        foreach (var id in CurrentJobs)
+        {
+            var job = _applicationDbContext.Find<Job>(id);
+            if (job != null)
+            {
+                ListJobs.Add(job);
+            }
+        }
+
+    }
 }

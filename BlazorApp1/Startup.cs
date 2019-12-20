@@ -17,6 +17,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using BlazorChatSample.Server.Hubs;
 using Blazored.SessionStorage;
+using Blazored.LocalStorage;
 using System.Net.Http;
 using Microsoft.AspNetCore.SignalR;
 
@@ -49,7 +50,7 @@ namespace BlazorApp1
 			})
 				.AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
-			services.AddSingleton<IUserIdProvider, CustomUserIdProvider>();
+			// services.AddSingleton<IUserIdProvider, CustomUserIdProvider>();
 			services.AddSingleton<ChatService>();
 			services.Configure<EmailSettings>(Configuration.GetSection("EmailSettings"));
 			services.AddSingleton<IEmailSender, EmailSender>();
@@ -58,6 +59,7 @@ namespace BlazorApp1
 			// services.AddMemoryCache();
 			services.AddHostedService<TimedHostedService>();
 			services.AddBlazoredSessionStorage();
+			services.AddBlazoredLocalStorage();
 			services.AddServerSideBlazor();
 			services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
 			services.AddScoped<IdentityMiddleware>();

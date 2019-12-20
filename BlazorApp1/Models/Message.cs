@@ -20,6 +20,7 @@ namespace BlazorApp1.Models
         public string Body { get; set; }
         public bool IsMine { get; set; }
         public bool IsSecret { get; set; }
+        public bool IsTimered { get; set; }
         public string FirstUserId { get; set; }
         public string SecondUserId { get; set; }
         public string Side
