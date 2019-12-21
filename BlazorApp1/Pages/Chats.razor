@@ -184,7 +184,7 @@
         if (CurrentJobs != null)
             for (int i = 0; i < CurrentJobs.Length; ++i)
                 CurrentJobs[i] = CurrentJobs[i].Trim();
-        CurrentJobs = CurrentJobs.Where(x => x != "").ToArray();
+        CurrentJobs = CurrentJobs?.Where(x => x != "")?.ToArray();
         if (UserIds != null && userId != UserIds.Split('_')[1] && userId != UserIds.Split('_')[1])
             _navigationManager.NavigateTo("/");
         if (UserIds != null)
@@ -207,8 +207,11 @@
         if (UserIds != null)
         {
             IsSecret = (UserIds.Split('_').Count() == 3 && UserIds.Split('_')[2] == "s");
-            Duration = _applicationDbContext.Find<SecretChat>(GetCombinedKey(UserIds)).Timer.Seconds.ToString();
-            needTimer = (TimeSpan.Parse(Duration) != TimeSpan.Zero ? true : false);
+            if (IsSecret)
+            {
+                Duration = _applicationDbContext.Find<SecretChat>(GetCombinedKey(UserIds))?.Timer.Seconds.ToString();
+                needTimer = (TimeSpan.Parse(Duration) != TimeSpan.Zero ? true : false);
+            }
             anotherUserId = UserIds.Split('_')[0];
             if (anotherUserId == userId)
                 anotherUserId = UserIds.Split('_')[1];
@@ -446,7 +449,6 @@
             _chatService.NotifyUser(anotherUser, publicKey, "sent_" + userId);
         }
         secretDialogIsOpen = false;
-
     }
 
     async Task<string> GetKeys(string anotherUser)

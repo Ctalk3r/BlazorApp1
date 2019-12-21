@@ -36,17 +36,18 @@ namespace BlazorApp1
 				waitDict.Add(userId, new Tuple<string, string>(who, message));
 		}
 
-		public void CheckSecretChats(ApplicationDbContext _applicationDbContext)
+		public List<Models.Message> CheckSecretChats(ApplicationDbContext _applicationDbContext)
 		{
 			var SecretChatsDict = _applicationDbContext.SecretChats.ToDictionary(chat => chat.ChatId, chat => chat.Timer);
 			var Messages = _applicationDbContext.Messages?.Where(message => message.IsSecret && message.IsTimered).ToList();
 			var groups = Messages?.GroupBy(message => CompareStrings(message.FirstUserId, message.SecondUserId) ? 
 														message.FirstUserId + "_" + message.SecondUserId :
 														message.SecondUserId + "_" + message.FirstUserId);
+			List<Models.Message> deleted = null;
 			foreach (var group in groups)
 			{
 				if (SecretChatsDict.ContainsKey(group.Key) == false || SecretChatsDict[group.Key] < TimeSpan.FromSeconds(1)) continue;
-				var deleted = group.ToList().FindAll(message => (DateTime.Now - message.CreationTime) >= SecretChatsDict[group.Key]);
+				deleted = group.ToList().FindAll(message => (DateTime.Now - message.CreationTime) >= SecretChatsDict[group.Key]);
 				if (deleted != null && deleted.Count != 0)
 				{
 					var D = Dispatcher.CreateDefault();
@@ -54,6 +55,7 @@ namespace BlazorApp1
 					D.InvokeAsync(async () => await notifyDict[group.Key.Split('_')[1]].InvokeAsync(new Tuple<string, string>(null, String.Join(' ', deleted.Select(message => message.MesssageId)))));
 				}
 			}
+			return deleted;
 		}
 		private bool CompareStrings(string s1, string s2)
 		{

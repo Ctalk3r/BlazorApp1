@@ -63,7 +63,7 @@
         if (CurrentJobs != null)
             for (int i = 0; i < CurrentJobs.Length; ++i)
                 CurrentJobs[i] = CurrentJobs[i].Trim();
-        CurrentJobs = CurrentJobs.Where(x => x != "").ToArray();
+        CurrentJobs = CurrentJobs?.Where(x => x != "")?.ToArray();
         foreach (var id in CurrentJobs)
         {
             var job = _applicationDbContext.Find<Job>(id);
