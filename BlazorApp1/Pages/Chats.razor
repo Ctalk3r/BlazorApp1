@@ -110,13 +110,14 @@
 
                         <p>
                             <MatSelect Label="Jobs" @bind-Value="@secretJobId">
+                                <MatOption></MatOption>
                                 @if (CurrentJobs != null)
                                     foreach (var jobId in CurrentJobs)
                                     {
                                         var job = _applicationDbContext.Find<Job>(jobId);
                                         if (_applicationDbContext.Find<SecretChat>(GetCombinedKey(job)) == null)
                                         {
-                                            <MatOption Value="@jobId">@(job.Title.Count() > 30 ? job.Title.Substring(0, 30) + "..." : job.Title)</MatOption>
+                                            <MatOption Value=@($"{jobId}")>@(job.Title.Count() > 30 ? job.Title.Substring(0, 30) + "..." : job.Title)</MatOption>
                                         }
                                     }
 
@@ -264,6 +265,12 @@
     {
         if (response == null)
         {
+            StateHasChanged();
+            return;
+        }
+        if (response.Item1 == null && response.Item2 == null)
+        {
+            StateHasChanged();
             return;
         }
         if (response.Item1 == null)
@@ -313,6 +320,12 @@
 
     async Task Send()
     {
+        IsSecret = (UserIds?.Split('_').Count() == 3 && UserIds?.Split('_')[2] == "s");
+        if (IsSecret)
+        {
+            Duration = _applicationDbContext.Find<SecretChat>(GetCombinedKey(UserIds))?.Timer.Seconds.ToString();
+            needTimer = (TimeSpan.Parse(Duration) != TimeSpan.Zero ? true : false);
+        }
         if (IsEncrypted)
         {
             try
@@ -508,6 +521,8 @@
                 // Attempt to save changes to the database
                 _applicationDbContext.SaveChanges();
                 saved = true;
+                _chatService.NotifyUser(job.ClientId, null, null);
+                _chatService.NotifyUser(job.FreelancerId, null, null);
             }
             catch (DbUpdateConcurrencyException ex)
             {
@@ -545,8 +560,11 @@
                 _applicationDbContext.SecretChats.Find(key).Timer = TimeSpan.FromDays(duration);
                 break;
         }
+        // _applicationDbContext.Update(_applicationDbContext.SecretChats.Find(key));
         _applicationDbContext.SaveChanges();
         dialogIsOpen = false;
+        _chatService.NotifyUser(job.FreelancerId, null, null);
+        _chatService.NotifyUser(job.ClientId, null, null);
 
     }
 }

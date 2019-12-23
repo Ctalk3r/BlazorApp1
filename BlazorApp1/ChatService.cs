@@ -32,7 +32,7 @@ namespace BlazorApp1
 			var D = Dispatcher.CreateDefault();
 			if (notifyDict.ContainsKey(userId))
 				D.InvokeAsync(async () => await notifyDict[userId].InvokeAsync(new Tuple<string, string>(who, message)));
-			else if (who.Split('_').Count() == 2 && who.Split('_')[0] == "sent")
+			else if (who != null && who.Split('_').Count() == 2 && who.Split('_')[0] == "sent")
 				waitDict.Add(userId, new Tuple<string, string>(who, message));
 		}
 

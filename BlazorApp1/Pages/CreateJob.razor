@@ -78,7 +78,7 @@
     {
         var myProvider = AuthenticationStateProvider as CustomAuthenticationStateProvider;
         var authState = await myProvider.GetAuthenticationStateAsync();
-        User user = await _userManager.FindByNameAsync(authState.User.Identity.Name);
+        User user = await _userManager.FindByEmailAsync(authState.User.FindFirst(System.Security.Claims.ClaimTypes.Email).Value);
                 
         Job newJob = new Job { Title = jobModel.Title, Description = jobModel.Description,
             Price = Decimal.Parse(jobModel.Price), EstimatedTime = (DateTime)jobModel.Term - DateTime.Now,
